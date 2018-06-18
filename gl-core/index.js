@@ -1,2 +1,2 @@
-export { Program } from './program'
-export { ArrayBuffer } from './array-buffer'
+export { makeShader } from './make-shader'
+export { makeProgram } from './make-program'
