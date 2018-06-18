@@ -1,5 +1,5 @@
 export const makeProgram = (gl, vertexShader, fragmentShader) => {
-    const program = gl.createProgram()
+    let program = gl.createProgram()
     gl.attachShader(program, vertexShader)
     gl.attachShader(program, fragmentShader)
     gl.linkProgram(program)
