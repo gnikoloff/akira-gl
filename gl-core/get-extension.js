@@ -3,16 +3,16 @@ import './vendor/oes-vertex-array-object-polyfill'
 const webGLExtensions = []
 
 export const getExtension = (gl, name) => {
-    let ext = extensions.find(ext => ext.name === extName)
+    let ext = webGLExtensions.find(ext => ext.name === name)
     if (ext) return ext.extension
 
     let newExt = {
-        name: extName,
-        extension: gl.getExtension(extName)
+        name,
+        extension: gl.getExtension(name)
     }
-    extensions.push(newExt)
+    webGLExtensions.push(newExt)
     
-    console.log(`Enabled WebGL extension: ${extName}`)
+    console.log(`Enabled WebGL extension: ${name}`)
 
     return newExt.extension
 }

@@ -1,4 +1,8 @@
+import { ELEMENT_ARRAY_BUFFER } from '../gl-constants'
+
 import { getExtension } from './get-extension'
+import { makeBuffer } from './make-buffer'
+import { bindBuffer } from './bind-buffer'
 
 export const makeVAO = (gl, attribs) => {
 
@@ -6,17 +10,23 @@ export const makeVAO = (gl, attribs) => {
     let vao = vaoExtension.createVertexArrayOES()
 
     vaoExtension.bindVertexArrayOES(vao)
- 
-    // rtn.buffers = attribs.map(attrib => {
-    //     const buffer = makeBuffer(gl, attrib)
-    //     if (attrib.bufferType !== gl.ELEMENT_ARRAY_BUFFER) {
-    //         bindBuffer(gl, buffer, attrib)
-    //     }
-    //     return buffer
-    // })
+
+    const buffers = attribs.map(attrib => {
+        let { bufferType, array, mode } = attrib
+        let buffer = makeBuffer(gl, bufferType, array, mode)
+        if (attrib.bufferType !== ELEMENT_ARRAY_BUFFER) {
+            let { attribLocation, attribType, itemsPerVert } = attrib
+            bindBuffer(gl, buffer, attribLocation, attribType, itemsPerVert)
+        }
+        return buffer
+    })
 
     vaoExtension.bindVertexArrayOES(null)
 
-    return vao
+    return {
+        vaoExtension,
+        buffers,
+        vao
+    }
 
 }
