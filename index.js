@@ -16,17 +16,6 @@ class Plane {
 
         this.geometry = new PlaneGeometry(width, height, widthSegment, heightSegment)
 
-        this.geometry.addAttribute(
-            'a_uv',
-            new Float32Array([
-                1.0, 0.0, 0.0,
-                0.0, 1.0, 0.0,
-                0.0, 0.0, 1.0,
-                0.0, 0.0, 0.0
-            ]),
-            3
-        )
-
         this.material = new Material({
                 u_time: { type: '1f', value: 0 },
                 u_radius: { type: '1f', value: 0.5 },
@@ -40,9 +29,6 @@ class Plane {
                 uniform mat4 u_projectionMatrix;
                 
                 attribute vec2 a_position;
-                attribute vec3 a_uv;
-
-                varying vec3 v_uv;
 
                 void main () {
                     vec2 position = vec2(
@@ -50,17 +36,11 @@ class Plane {
                         a_position.y + cos(u_time) * u_radius
                     );
                     gl_Position = u_projectionMatrix * u_viewMatrix * vec4(a_position, 1.0, 1.0);
-
-                    v_uv = a_uv;
                 }
             `, 
             `
-                precision highp float;
-
-                varying vec3 v_uv;
-
                 void main () {
-                    gl_FragColor = vec4(v_uv, 1.0);
+                    gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
                 }
             `
         )

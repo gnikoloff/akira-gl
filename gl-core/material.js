@@ -7,8 +7,12 @@ export class Material {
     constructor (uniforms, vertexShaderSource, fragmentShaderSource) {
         this.uniforms = uniforms
         this.vertexShaderSource = vertexShaderSource
-        this.fragmentShaderSource = fragmentShaderSource
-    }
+        this.fragmentShaderSource = `
+            precision highp float;
+
+            ${fragmentShaderSource}
+        `
+    }   
 
     init (gl) {
         this.gl = gl
