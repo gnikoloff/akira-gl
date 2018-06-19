@@ -60,7 +60,6 @@ export class PlaneGeometry extends Geometry {
                 uvsArr.push(uvx, uvy)
             }
         }
-        console.log(uvsArr)
         return new Float32Array(uvsArr)
     }
 
