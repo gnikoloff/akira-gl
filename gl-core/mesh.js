@@ -13,8 +13,8 @@ export class Mesh {
 
         material.init(gl)
         this.activate()
-        material.getAttribLocations(geometry.attribs)
         material.setUniforms()
+        material.getAttribLocations(geometry.attribs)
         this.deactivate()
 
         this.vao = makeVAO(gl, geometry.attribs)
@@ -25,6 +25,12 @@ export class Mesh {
 
         if (this.hasIndices) {
             this.vertexCount = geometry.indices.length
+        } else {
+            const vertices = geometry.attribs.find(attrib => {
+                if (attrib.name === 'a_position') return attrib
+            })
+            const { itemsPerVert } = vertices
+            this.vertexCount = vertices.array.length / itemsPerVert
         }
     }
     
@@ -41,6 +47,8 @@ export class Mesh {
 
         if (this.hasIndices) {
             this.gl.drawElements(this.drawOperation, this.vertexCount, this.gl.UNSIGNED_SHORT, 0)
+        } else {
+            this.gl.drawArrays(this.drawOperation, 0, this.vertexCount) 
         }
 
         this.vao.vaoExtension.bindVertexArrayOES(null)

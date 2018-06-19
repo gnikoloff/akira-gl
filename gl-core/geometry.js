@@ -5,8 +5,8 @@ import {
 } from '../gl-constants'
 
 export class Geometry {
-    constructor () {
-        this.attribs = []
+    constructor (attribs = []) {
+        this.attribs = attribs
     }
 
     addAttribute (name, array, itemsPerVert = 2, mode = STATIC_DRAW) {

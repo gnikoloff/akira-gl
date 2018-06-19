@@ -3,13 +3,26 @@ import { ELEMENT_ARRAY_BUFFER } from '../gl-constants'
 import { makeShader } from './make-shader'
 import { makeProgram } from './make-program'
 
+const shaderPrecisionFragment = `
+    precision highp float;
+`
+
+const shaderSharedUniformsVertexFragment = `
+    uniform mat4 u_viewMatrix;
+    uniform mat4 u_projectionMatrix;
+`
+
 export class Material {
     constructor (uniforms, vertexShaderSource, fragmentShaderSource) {
         this.uniforms = uniforms
-        this.vertexShaderSource = vertexShaderSource
+        this.vertexShaderSource = `
+            ${shaderSharedUniformsVertexFragment}
+        
+            ${vertexShaderSource}
+        `
         this.fragmentShaderSource = `
-            precision highp float;
-
+            ${shaderPrecisionFragment}
+            
             ${fragmentShaderSource}
         `
     }   
@@ -25,7 +38,7 @@ export class Material {
 
     setUniforms () {
         const { uniforms } = this
-        Object.keys(uniforms).map(val => {
+        Object.keys(uniforms).forEach(val => {
             uniforms[val].location = this.gl.getUniformLocation(this.program, val)
             if (uniforms[val].type === 'Matrix4fv') {
                 this.gl[`uniform${uniforms[val].type}`](uniforms[val].location, false, uniforms[val].value)
