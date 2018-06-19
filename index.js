@@ -1,28 +1,21 @@
-import { PlaneGeometry } from './gl-geometry-2D'
-
-import {
-    makeVAO,
-    Material
-} from './gl-core'
-
 import { PerspectiveCamera } from './gl-camera'
+import { PlaneGeometry } from './gl-geometry-2D'
+import { Material, Mesh } from './gl-core'
 
 const $canvas = document.createElement('canvas')
 const gl = $canvas.getContext('webgl') || $canvas.getContext('experimental-webgl')
 
-const camera = new PerspectiveCamera(512, 512)
-
-camera.setPosition(0, 0, 0.2)
-camera.lookAt([ 0, 0, 0 ])  
+const camera = new PerspectiveCamera()
+camera.translate(10, 0, 10)
+camera.lookAt(0, 0, 0)  
+camera.update()
 
 class Plane {
     constructor (gl, width, height, widthSegment, heightSegment) {
         this.gl = gl
-        this.geometry = new PlaneGeometry(width, height, widthSegment, heightSegment)
 
-        this.material = new Material(
-            gl, 
-            {
+        this.geometry = new PlaneGeometry(width, height, widthSegment, heightSegment)
+        this.material = new Material({
                 u_time: { type: '1f', value: 0 },
                 u_radius: { type: '1f', value: 0.5 },
                 u_viewMatrix: { type: 'Matrix4fv', value: camera.viewMatrix },
@@ -51,39 +44,20 @@ class Plane {
             `
         )
 
-        const attribs = [
-            {
-                bufferType: gl.ARRAY_BUFFER,
-                array: this.geometry.vertices,
-                attribLocation: gl.getAttribLocation(this.material.program, 'a_position'),
-                attribType: gl.FLOAT,
-                itemsPerVert: 2,
-                mode: gl.STATIC_DRAW
-            },
-            {
-                bufferType: gl.ELEMENT_ARRAY_BUFFER,
-                array: this.geometry.indices,
-                mode: gl.STATIC_DRAW
-            }
-        ]
-
-        this.vertexCount = this.geometry.indices.length
-
-        this.vao = makeVAO(gl, attribs)
+        this.mesh = new Mesh(gl, this.geometry, this.material)
 
     }
 
     renderFrame (time) {
-        this.material.activate()
-        this.vao.vaoExtension.bindVertexArrayOES(this.vao.vao)
 
-        this.material.uniforms.u_time.value = time
-        this.material.updateUniform(this.material.uniforms.u_time)
+        this.mesh.activate()
 
-        gl.drawElements(2, this.vertexCount, gl.UNSIGNED_SHORT, 0)
-        this.vao.vaoExtension.bindVertexArrayOES(null)
+        this.mesh.material.uniforms.u_time.value = time
+        this.mesh.material.updateUniform(this.mesh.material.uniforms.u_time)
 
-        this.material.deactivate()
+        this.mesh.renderFrame()
+
+        this.mesh.deactivate()
     }
 
 }
@@ -116,5 +90,6 @@ function renderFrame () {
     gl.enable(gl.CULL_FACE);
     gl.enable(gl.DEPTH_TEST);
     plane.renderFrame(time)
+    
 
 }

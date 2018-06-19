@@ -17,6 +17,7 @@
     "rollup-plugin-scss": "^0.4.0"
   },
   "dependencies": {
-    "gl-matrix": "^2.6.1"
+    "gl-matrix": "^2.6.1",
+    "perspective-camera": "^2.0.1"
   }
 }

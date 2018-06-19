@@ -1,9 +1,36 @@
-export class PlaneGeometry {
+import {
+    FLOAT,
+    ELEMENT_ARRAY_BUFFER,
+    ARRAY_BUFFER,
+    STATIC_DRAW
+} from '../gl-constants'
+
+import { Geometry } from '../gl-core'
+
+export class PlaneGeometry extends Geometry {
     constructor (width, height, widthSegments, heightSegments) {
+
+        super()
         
         this.vertices = this.makeVertices(widthSegments, heightSegments, width, height)
         this.uvs = this.makeUvs(widthSegments, heightSegments)
         this.indices = this.makeIndices(widthSegments, heightSegments)   
+
+        this.attribs = [
+            {
+                name: 'a_position',
+                bufferType: ARRAY_BUFFER,
+                array: this.vertices,
+                attribType: FLOAT,
+                itemsPerVert: 2,
+                mode: STATIC_DRAW
+            },
+            {
+                bufferType: ELEMENT_ARRAY_BUFFER,
+                array: this.indices,
+                mode: STATIC_DRAW
+            }
+        ]
     }
 
     makeVertices (widthSegments, heightSegments, width, height) {

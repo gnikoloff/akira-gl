@@ -1,28 +1,43 @@
+import { ELEMENT_ARRAY_BUFFER } from '../gl-constants'
+
 import { makeShader } from './make-shader'
 import { makeProgram } from './make-program'
 
 export class Material {
-    constructor (gl, uniforms, vertexShaderSource, fragmentShaderSource) {
-        this.gl = gl
+    constructor (uniforms, vertexShaderSource, fragmentShaderSource) {
+        this.uniforms = uniforms
+        this.vertexShaderSource = vertexShaderSource
+        this.fragmentShaderSource = fragmentShaderSource
+    }
 
-        const vertexShader = makeShader(gl, gl.VERTEX_SHADER, vertexShaderSource)
-        const fragmentShader = makeShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource)
+    init (gl) {
+        this.gl = gl
+        const vertexShader = makeShader(gl, gl.VERTEX_SHADER, this.vertexShaderSource)
+        const fragmentShader = makeShader(gl, gl.FRAGMENT_SHADER, this.fragmentShaderSource)
 
         this.program = makeProgram(gl, vertexShader, fragmentShader)
-        this.gl.useProgram(this.program)
+        
+    }
 
+    setUniforms () {
+        const { uniforms } = this
         Object.keys(uniforms).map(val => {
-            uniforms[val].location = gl.getUniformLocation(this.program, val)
+            uniforms[val].location = this.gl.getUniformLocation(this.program, val)
             if (uniforms[val].type === 'Matrix4fv') {
                 this.gl[`uniform${uniforms[val].type}`](uniforms[val].location, false, uniforms[val].value)
-                console.log(uniforms[val].value)
             } else {
                 this.gl[`uniform${uniforms[val].type}`](uniforms[val].location, uniforms[val].value)
             }
         })
         this.uniforms = uniforms
+    }
 
-        this.gl.useProgram(null)
+    getAttribLocations (attribs) {
+        attribs.forEach(attrib => {
+            if (attrib.bufferType === ELEMENT_ARRAY_BUFFER) return
+            const loc = this.gl.getAttribLocation(this.program, attrib.name)
+            attrib.attribLocation = loc
+        })
     }
 
     updateUniform (uniform) {
