@@ -22,12 +22,21 @@ export class PerspectiveCamera {
 		return this.camera.projection
 	}
 
+	setPosition (x, y, z) {
+		this.identity()
+		this.translate(x, y, z)
+	}
+
+	identity () {
+		this.camera.identity()
+	}
+
 	translate (x = 0, y = 0, z = 0) {
 		this.camera.translate([ x, y, z ])
 	}
 
-	lookAt (x = 0, y = 0, z = 0) {
-		this.camera.lookAt([ x, y, z ])
+	lookAt (arr = [ 0, 0, 0 ]) {
+		this.camera.lookAt(arr)
 	}
 
 	update () {

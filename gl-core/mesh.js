@@ -42,7 +42,15 @@ export class Mesh {
         this.material.deactivate()
     }
 
-    renderFrame () {
+    preRender (camera) {
+        this.material.setViewMatrix(camera.viewMatrix)
+        this.material.setProjectionMatrix(camera.projectionMatrix)
+    }
+
+    renderFrame (camera) {
+
+        this.preRender(camera)
+
         this.vao.vaoExtension.bindVertexArrayOES(this.vao.vao)
 
         if (this.hasIndices) {

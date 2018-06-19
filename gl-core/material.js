@@ -40,6 +40,8 @@ export class Material {
         const { uniforms } = this
         Object.keys(uniforms).forEach(val => {
             uniforms[val].location = this.gl.getUniformLocation(this.program, val)
+            
+            if (!uniforms[val].value) return
             if (uniforms[val].type === 'Matrix4fv') {
                 this.gl[`uniform${uniforms[val].type}`](uniforms[val].location, false, uniforms[val].value)
             } else {
@@ -63,6 +65,16 @@ export class Material {
         } else {
             this.gl[`uniform${uniform.type}`](uniform.location, uniform.value)
         }
+    }
+
+    setViewMatrix (matrix) {
+        const { u_viewMatrix } = this.uniforms
+        this.gl.uniformMatrix4fv(u_viewMatrix.location, false, matrix)
+    }
+
+    setProjectionMatrix (matrix) {
+        const { u_projectionMatrix } = this.uniforms
+        this.gl.uniformMatrix4fv(u_projectionMatrix.location, false, matrix)
     }
 
     activate () {

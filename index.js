@@ -6,8 +6,9 @@ const $canvas = document.createElement('canvas')
 const gl = $canvas.getContext('webgl') || $canvas.getContext('experimental-webgl')
 
 const camera = new PerspectiveCamera()
+const cameraLookAt = [ 0, 0, 0 ]
 camera.translate(4, 0, 4)
-camera.lookAt(0, 0, 0)  
+camera.lookAt(cameraLookAt)  
 camera.update()
 
 class Plane {
@@ -18,8 +19,8 @@ class Plane {
         this.material = new Material({
                 u_time: { type: '1f', value: 0.5 },
                 u_radius: { type: '1f', value: 0.5 },
-                u_viewMatrix: { type: 'Matrix4fv', value: camera.viewMatrix },
-                u_projectionMatrix: { type: 'Matrix4fv', value: camera.projectionMatrix } 
+                u_viewMatrix: { type: 'Matrix4fv', value: null },
+                u_projectionMatrix: { type: 'Matrix4fv', value: null } 
             },
             `
                 uniform float u_time;
@@ -48,13 +49,13 @@ class Plane {
 
     }
 
-    renderFrame (time) {
+    renderFrame (camera, time) {
 
         this.mesh.activate()
         this.mesh.material.uniforms.u_time.value = time
         this.mesh.material.updateUniform(this.mesh.material.uniforms.u_time)
 
-        this.mesh.renderFrame()
+        this.mesh.renderFrame(camera)
 
         this.mesh.deactivate()
     }
@@ -75,8 +76,8 @@ class Triangle {
         )
 
         this.material = new Material({
-            u_viewMatrix: { type: 'Matrix4fv', value: camera.viewMatrix },
-            u_projectionMatrix: { type: 'Matrix4fv', value: camera.projectionMatrix }
+            u_viewMatrix: { type: 'Matrix4fv', value: null },
+            u_projectionMatrix: { type: 'Matrix4fv', value: null }
         },
         `
             attribute vec3 a_position;
@@ -95,10 +96,10 @@ class Triangle {
         this.mesh = new Mesh(gl, this.geometry, this.material)
     }     
 
-    renderFrame (time) {
+    renderFrame (camera, time) {
         this.mesh.activate()
 
-        this.mesh.renderFrame()
+        this.mesh.renderFrame(camera)
 
         this.mesh.deactivate()
     }
@@ -131,11 +132,17 @@ function renderFrame () {
     gl.viewport(0, 0, w, h)
     gl.clearColor(0.2, 0.2, 0.2, 1.0)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-    gl.enable(gl.CULL_FACE)
+    // gl.enable(gl.CULL_FACE)
     gl.enable(gl.DEPTH_TEST)
     
-    plane.renderFrame(time)
-    triangle.renderFrame(time)
+    const x = Math.sin(time) * 3
+    const y = Math.cos(time) * 3
+    camera.setPosition(x, 0, y)
+    camera.lookAt(cameraLookAt)
+    camera.update()
+
+    plane.renderFrame(camera, time)
+    triangle.renderFrame(camera, time)
     
 
 }
