@@ -1,5 +1,5 @@
 export class Mesh {
-    constructor (geometry, material) {
+    constructor (gl, geometry, material) {
         
     }
 }

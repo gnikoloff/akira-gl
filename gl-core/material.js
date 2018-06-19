@@ -13,7 +13,12 @@ export class Material {
 
         Object.keys(uniforms).map(val => {
             uniforms[val].location = gl.getUniformLocation(this.program, val)
-            this.gl[`uniform${uniforms[val].type}`](uniforms[val].location, uniforms[val].value)
+            if (uniforms[val].type === 'Matrix4fv') {
+                this.gl[`uniform${uniforms[val].type}`](uniforms[val].location, false, uniforms[val].value)
+                console.log(uniforms[val].value)
+            } else {
+                this.gl[`uniform${uniforms[val].type}`](uniforms[val].location, uniforms[val].value)
+            }
         })
         this.uniforms = uniforms
 
@@ -21,7 +26,11 @@ export class Material {
     }
 
     updateUniform (uniform) {
-        this.gl[`uniform${uniform.type}`](uniform.location, uniform.value)
+        if (uniform.type === 'Matrix4fv') {
+            this.gl[`uniform${uniforms.type}`](uniforms.location, false, uniforms.value)
+        } else {
+            this.gl[`uniform${uniform.type}`](uniform.location, uniform.value)
+        }
     }
 
     activate () {

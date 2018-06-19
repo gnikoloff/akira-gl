@@ -15,5 +15,8 @@
     "rollup-plugin-glsl": "^1.2.0",
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-scss": "^0.4.0"
+  },
+  "dependencies": {
+    "gl-matrix": "^2.6.1"
   }
 }
