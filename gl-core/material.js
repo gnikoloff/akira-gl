@@ -14,7 +14,13 @@ const shaderSharedUniformsVertexFragment = `
 
 export class Material {
     constructor (uniforms, vertexShaderSource, fragmentShaderSource) {
-        this.uniforms = uniforms
+
+        const sharedUniforms = {
+            u_viewMatrix: { type: 'Matrix4fv', value: null },
+            u_projectionMatrix: { type: 'Matrix4fv', value: null } 
+        }
+        this.uniforms = Object.assign(sharedUniforms, uniforms)
+
         this.vertexShaderSource = `
             ${shaderSharedUniformsVertexFragment}
         
