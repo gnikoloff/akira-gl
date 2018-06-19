@@ -1,6 +1,7 @@
 import {
     FLOAT,
     ARRAY_BUFFER,
+    ELEMENT_ARRAY_BUFFER,
     STATIC_DRAW
 } from '../gl-constants'
 
@@ -17,6 +18,14 @@ export class Geometry {
             attribType: FLOAT,
             itemsPerVert,
             mode
+        })
+    }
+
+    addIndices (array) {
+        this.attribs.push({
+            bufferType: ELEMENT_ARRAY_BUFFER,
+            array,
+            mode: STATIC_DRAW
         })
     }
 

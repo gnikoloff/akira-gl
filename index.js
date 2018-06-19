@@ -12,15 +12,16 @@ class Plane {
 
         this.material = new Material({
                 u_time: { type: '1f', value: 0.5 },
-                u_radius: { type: '1f', value: 0.5 },
-                u_viewMatrix: { type: 'Matrix4fv', value: null },
-                u_projectionMatrix: { type: 'Matrix4fv', value: null } 
+                u_radius: { type: '1f', value: 0.5 }
             },
             `
                 uniform float u_time;
                 uniform float u_radius;
                 
                 attribute vec2 a_position;
+                attribute vec2 a_uv;
+
+                varying vec2 v_uv;
 
                 void main () {
                     vec2 position = vec2(
@@ -30,16 +31,20 @@ class Plane {
                     gl_Position = u_projectionMatrix * u_viewMatrix * vec4(position, 
                         cos(u_time + (a_position.x + a_position.y)) * u_radius
                     , 1.0);
+
+                    v_uv = a_uv;
                 }
             `, 
             `
+                varying vec2 v_uv;
+
                 void main () {
-                    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+                    gl_FragColor = vec4(v_uv, 0.0, 1.0);
                 }
             `
         )
 
-        this.mesh = new Mesh(gl, this.geometry, this.material)
+        this.mesh = new Mesh(gl, this.geometry, this.material, 2)
 
     }
 
@@ -57,22 +62,20 @@ class Plane {
 }
 
 class Triangle {
-    constructor (gl, radius) {
+    constructor (gl) {
         this.geometry = new Geometry()
+        const radius = 1 / 3
         this.geometry.addAttribute(
             'a_position',
             new Float32Array([
-                0.0, 0.0, 0.0,
-                1.0, -1.0, 1.0,
-                1.0, 1.0, -0.0
+                -radius / 2 , -radius / 2, 1.0,
+                radius / 2, -radius / 2, -1,
+                radius / 2, radius, 0.0
             ]),
             3
         )
 
-        this.material = new Material({
-            u_viewMatrix: { type: 'Matrix4fv', value: null },
-            u_projectionMatrix: { type: 'Matrix4fv', value: null }
-        },
+        this.material = new Material({},
         `
             attribute vec3 a_position;
 
@@ -101,8 +104,8 @@ class Triangle {
 }
 
 
-let w = 512
-let h = 512
+let w = window.innerWidth
+let h = window.innerHeight
 let elapsedTime = 0
 
 $canvas.width  = w
@@ -117,7 +120,6 @@ const cameraLookAt = [ 0, 0, 0 ]
 camera.translate(4, 0, 4)
 camera.lookAt(cameraLookAt)  
 camera.update()
-
 
 window.requestAnimationFrame(renderFrame)
 
