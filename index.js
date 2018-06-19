@@ -5,12 +5,6 @@ import { PlaneGeometry } from './gl-geometry-2D'
 const $canvas = document.createElement('canvas')
 const gl = $canvas.getContext('webgl') || $canvas.getContext('experimental-webgl')
 
-const camera = new PerspectiveCamera()
-const cameraLookAt = [ 0, 0, 0 ]
-camera.translate(4, 0, 4)
-camera.lookAt(cameraLookAt)  
-camera.update()
-
 class Plane {
     constructor (gl, width, height, widthSegment, heightSegment) {
 
@@ -111,14 +105,19 @@ let w = 512
 let h = 512
 let elapsedTime = 0
 
-
 $canvas.width  = w
 $canvas.height = h
-
 document.body.appendChild($canvas)
 
 const plane = new Plane(gl, 1, 1, 1, 1)
 const triangle = new Triangle(gl, 5)
+
+const camera = new PerspectiveCamera(w, h)
+const cameraLookAt = [ 0, 0, 0 ]
+camera.translate(4, 0, 4)
+camera.lookAt(cameraLookAt)  
+camera.update()
+
 
 window.requestAnimationFrame(renderFrame)
 
@@ -137,7 +136,7 @@ function renderFrame () {
     
     const x = Math.sin(time) * 3
     const y = Math.cos(time) * 3
-    camera.setPosition(x, 0, y)
+    camera.setPosition(x, y, y)
     camera.lookAt(cameraLookAt)
     camera.update()
 

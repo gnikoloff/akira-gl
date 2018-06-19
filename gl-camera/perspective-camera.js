@@ -5,12 +5,12 @@ let h = window.innerHeight
 
 export class PerspectiveCamera {
 	
-	constructor (fov = Math.PI / 4, near = 0.01, far = 1000, viewport = [ 0, 0, w, h ]) {
+	constructor (width = w, height = h, fov = Math.PI / 4, near = 0.01, far = 1000) {
 		this.camera = createCamera({
 			fov,
 			near,
 			far,
-			viewport
+			viewport: [ 0, 0, width, height ]
 		})
 	}
 
