@@ -9,14 +9,13 @@ import { Geometry } from '../gl-core'
 
 export class PlaneGeometry extends Geometry {
     constructor (width, height, widthSegments, heightSegments) {
-
         super()
         
         this.vertices = this.makeVertices(widthSegments, heightSegments, width, height)
         this.uvs = this.makeUvs(widthSegments, heightSegments)
         this.indices = this.makeIndices(widthSegments, heightSegments)   
 
-        this.attribs = [
+        this.attribs.push(
             {
                 name: 'a_position',
                 bufferType: ARRAY_BUFFER,
@@ -30,7 +29,7 @@ export class PlaneGeometry extends Geometry {
                 array: this.indices,
                 mode: STATIC_DRAW
             }
-        ]
+        )
     }
 
     makeVertices (widthSegments, heightSegments, width, height) {
@@ -61,6 +60,7 @@ export class PlaneGeometry extends Geometry {
                 uvsArr.push(uvx, uvy)
             }
         }
+        console.log(uvsArr)
         return new Float32Array(uvsArr)
     }
 
