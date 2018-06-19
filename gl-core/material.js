@@ -13,7 +13,13 @@ const shaderSharedUniformsVertexFragment = `
 `
 
 export class Material {
-    constructor (uniforms, vertexShaderSource, fragmentShaderSource) {
+    constructor (props) {
+
+        const {
+            uniforms,
+            vertexShader,
+            fragmentShader
+        } = props
 
         const sharedUniforms = {
             u_viewMatrix: { type: 'Matrix4fv', value: null },
@@ -24,12 +30,12 @@ export class Material {
         this.vertexShaderSource = `
             ${shaderSharedUniformsVertexFragment}
         
-            ${vertexShaderSource}
+            ${vertexShader}
         `
         this.fragmentShaderSource = `
             ${shaderPrecisionFragment}
             
-            ${fragmentShaderSource}
+            ${fragmentShader}
         `
     }   
 

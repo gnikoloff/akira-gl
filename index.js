@@ -11,10 +11,11 @@ class Plane {
         this.geometry = new PlaneGeometry(width, height, widthSegment, heightSegment)
 
         this.material = new Material({
+            uniforms: {
                 u_time: { type: '1f', value: 0.5 },
                 u_radius: { type: '1f', value: 0.5 }
             },
-            `
+            vertexShader: `
                 uniform float u_time;
                 uniform float u_radius;
                 
@@ -35,14 +36,14 @@ class Plane {
                     v_uv = a_uv;
                 }
             `, 
-            `
+            fragmentShader: `
                 varying vec2 v_uv;
 
                 void main () {
                     gl_FragColor = vec4(v_uv, 0.0, 1.0);
                 }
             `
-        )
+        })
 
         this.mesh = new Mesh(gl, this.geometry, this.material, 2)
 
@@ -75,20 +76,21 @@ class Triangle {
             3
         )
 
-        this.material = new Material({},
-        `
-            attribute vec3 a_position;
+        this.material = new Material({
+            uniforms: {},
+            vertexShader: `
+                attribute vec3 a_position;
 
-            void main () {
-                gl_Position = u_projectionMatrix * u_viewMatrix * vec4(a_position, 1.0);
-            }
-        `,
-        `
-            void main () {
-                gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
-            }
-        `
-        )
+                void main () {
+                    gl_Position = u_projectionMatrix * u_viewMatrix * vec4(a_position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                void main () {
+                    gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
+                }
+            `
+        })
 
         this.mesh = new Mesh(gl, this.geometry, this.material)
     }     

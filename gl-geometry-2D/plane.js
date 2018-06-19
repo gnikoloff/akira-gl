@@ -12,12 +12,12 @@ export class PlaneGeometry extends Geometry {
             'a_position',
             this.vertices,
             2
-        )   
+        )
         this.addAttribute(
             'a_uv',
             this.uvs,
             2
-        ) 
+        )
         this.addIndices(this.indices)
 
     }
