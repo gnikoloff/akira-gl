@@ -53,6 +53,10 @@ export class Vector4 {
         this._w = w
     }
 
+    getArray () {
+        return [ this._x, this._y, this._z, this._w ]
+    }
+
     clone () {
         const newVector = vec4.create()
         vec4.set(newVector, this._x, this._y, this._z, this._w)

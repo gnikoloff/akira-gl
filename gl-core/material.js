@@ -1,4 +1,5 @@
 import { ELEMENT_ARRAY_BUFFER } from '../gl-constants'
+import { Uniform } from './uniform'
 import { Transform } from '../gl-math'
 import { makeShader } from './make-shader'
 import { makeProgram } from './make-program'
@@ -24,12 +25,7 @@ export class Material {
 
         this.transform = new Transform()
 
-        const sharedUniforms = {
-            u_modelMatrix: { type: 'Matrix4fv', value: this.transform.viewMatrix },
-            u_viewMatrix: { type: 'Matrix4fv', value: null },
-            u_projectionMatrix: { type: 'Matrix4fv', value: null } 
-        }
-        this.uniforms = Object.assign(sharedUniforms, uniforms)
+        this.generateUniforms(uniforms)
 
         this.vertexShaderSource = `
             ${shaderSharedUniformsVertexFragment}
@@ -43,6 +39,19 @@ export class Material {
         `
     }   
 
+    generateUniforms (uniforms) {
+        const sharedUniforms = {
+            u_modelMatrix: new Uniform('u_modelMatrix', 'Matrix4fv', this.transform.viewMatrix),
+            u_viewMatrix: new Uniform('u_viewMatrix', 'Matrix4fv'),
+            u_projectionMatrix: new Uniform('u_projectionMatrix', 'Matrix4fv')
+        }
+        Object.keys(uniforms).forEach(val => {
+            const uniformCopy = uniforms[val]
+            uniforms[val] = new Uniform(val, uniformCopy.type, uniformCopy.value)
+        })
+        this.uniforms = Object.assign(sharedUniforms, uniforms)
+    }
+
     init (gl) {
         this.gl = gl
         const vertexShader = makeShader(gl, gl.VERTEX_SHADER, this.vertexShaderSource)
@@ -55,14 +64,8 @@ export class Material {
     setUniforms () {
         const { uniforms } = this
         Object.keys(uniforms).forEach(val => {
-            uniforms[val].location = this.gl.getUniformLocation(this.program, val)
-            
-            if (!uniforms[val].value) return
-            if (uniforms[val].type === 'Matrix4fv') {
-                this.gl[`uniform${uniforms[val].type}`](uniforms[val].location, false, uniforms[val].value)
-            } else {
-                this.gl[`uniform${uniforms[val].type}`](uniforms[val].location, uniforms[val].value)
-            }
+            uniforms[val].setLocation(this.gl, this.program)
+            uniforms[val].setValue()
         })
         this.uniforms = uniforms
     }
@@ -86,19 +89,16 @@ export class Material {
     updateModelMatrix () {
         if (!this.transform.shouldUpdateMatrix) return
         
-        const { u_modelMatrix } = this.uniforms
-        this.gl.uniformMatrix4fv(u_modelMatrix.location, false, this.transform.viewMatrix)
+        this.uniforms.u_modelMatrix.setValue(this.transform.viewMatrix)
         this.transform.shouldUpdateMatrix = false
     }
 
     setViewMatrix (matrix) {
-        const { u_viewMatrix } = this.uniforms
-        this.gl.uniformMatrix4fv(u_viewMatrix.location, false, matrix)
+        this.uniforms.u_viewMatrix.setValue(matrix)
     }
 
     setProjectionMatrix (matrix) {
-        const { u_projectionMatrix } = this.uniforms
-        this.gl.uniformMatrix4fv(u_projectionMatrix.location, false, matrix)
+        this.uniforms.u_projectionMatrix.setValue(matrix)
     }
 
     activate () {

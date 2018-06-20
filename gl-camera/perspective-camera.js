@@ -22,6 +22,10 @@ export class PerspectiveCamera {
 		return this.camera.projection
 	}
 
+	panX (v) {
+		this.update()
+	}
+
 	setPosition (x, y, z) {
 		this.identity()
 		this.translate(x, y, z)

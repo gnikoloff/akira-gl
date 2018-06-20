@@ -1,161 +1,10 @@
-import { PerspectiveCamera } from './gl-camera'
+import { PerspectiveCamera, CameraController } from './gl-camera'
 import { Geometry, Material, Mesh } from './gl-core'
+import { Vector3 } from './gl-math'
 import { PlaneGeometry, CubeGeometry } from './gl-geometry'
-
-
 
 const $canvas = document.createElement('canvas')
 const gl = $canvas.getContext('webgl') || $canvas.getContext('experimental-webgl')
-
-class Plane {
-    constructor (gl, width, height, widthSegment, heightSegment) {
-
-    this.geometry = new PlaneGeometry(width, height, widthSegment, heightSegment)
-
-    this.material = new Material({
-        uniforms: {
-            u_time: { type: '1f', value: 0.5 },
-            u_radius: { type: '1f', value: 0.5 }
-        },
-        vertexShader: `
-            uniform float u_time;
-            uniform float u_radius;
-            
-            attribute vec2 a_position;
-            attribute vec2 a_uv;
-
-            varying vec2 v_uv;
-
-            void main () {
-                vec2 position = vec2(
-                    a_position.x + sin(u_time) * u_radius,
-                    a_position.y + cos(u_time) * u_radius
-                );
-                gl_Position = u_projectionMatrix * u_viewMatrix * u_modelMatrix * vec4(a_position, 0.0, 1.0);
-
-                v_uv = a_uv;
-            }
-        `, 
-        fragmentShader: `
-            varying vec2 v_uv;
-
-            void main () {
-                gl_FragColor = vec4(v_uv, 0.0, 1.0);
-            }
-        `
-    })
-
-    this.mesh = new Mesh(gl, this.geometry, this.material, 2)
-
-    }
-
-    renderFrame (camera, time) {
-
-        this.mesh.activate()
-        this.mesh.material.uniforms.u_time.value = time
-        this.mesh.material.updateUniform(this.mesh.material.uniforms.u_time)
-
-        this.mesh.renderFrame(camera)
-
-        this.mesh.deactivate()
-    }
-
-}
-
-class Triangle {
-    constructor (gl) {
-        this.geometry = new Geometry()
-        const radius = 1 / 3
-        this.geometry.addAttribute(
-            'a_position',
-            new Float32Array([
-                -radius / 2 , -radius / 2, 1.0,
-                radius / 2, -radius / 2, -1,
-                radius / 2, radius, 0.0
-            ]),
-            3
-        )
-
-        this.material = new Material({
-            uniforms: {},
-            vertexShader: `
-                attribute vec3 a_position;
-
-                void main () {
-                    gl_Position = u_projectionMatrix * u_viewMatrix * vec4(a_position, 1.0);
-                }
-            `,
-            fragmentShader: `
-                void main () {
-                    gl_FragColor = vec4(vec3(0.25), 1.0);
-                }
-            `
-        })
-
-        this.mesh = new Mesh(gl, this.geometry, this.material)
-    }     
-
-    renderFrame (camera, time) {
-        this.mesh.activate()
-
-        this.mesh.renderFrame(camera)
-
-        this.mesh.deactivate()
-    }
-
-}
-
-class Points {
-    constructor (gl, count) {
-        const geometry = new Geometry()
-
-        const step = (Math.PI * 3) / count
-
-        const vertices = new Float32Array(count * 3)
-
-        for (let i = 0; i < count; i += 1) {
-            vertices[i * 3 + 0] = Math.sin(i * step) * 1
-            vertices[i * 3 + 1] = Math.cos(i * step) * 1
-            vertices[i * 3 + 2] = i * 0.1 - count / 2 * 0.1
-        }
-        
-        geometry.addAttribute(
-            'a_position',
-            vertices,
-            3
-        )
-
-        const material = new Material({
-            uniforms: {},
-            vertexShader: `
-                attribute vec3 a_position;
-
-                void main () {
-                    gl_Position = u_projectionMatrix * u_viewMatrix * vec4(a_position, 1.0);
-                    gl_PointSize = 10.0;
-                }
-            `,
-            fragmentShader: `
-                void main () {
-                    gl_FragColor = vec4(vec3(0.5), 1.0);
-                }
-            `
-        })
-
-        this.mesh = new Mesh(gl, geometry, material, 0)
-        this.mesh2 = new Mesh(gl, geometry, material, 1)
-
-    }
-    
-    renderFrame (camera, time) {
-        this.mesh.activate()
-
-        this.mesh.renderFrame(camera)
-        this.mesh2.renderFrame(camera)
-
-        this.mesh.deactivate()
-    }
-}
 
 
 let w = window.innerWidth
@@ -166,30 +15,64 @@ $canvas.width  = w
 $canvas.height = h
 document.body.appendChild($canvas)
 
-// const plane = new Plane(gl, 1, 1, 1, 1)
-// const triangle = new Triangle(gl)
-// const points = new Points(gl, 22)
+class Box {
+    constructor (geometry, position, scale) {
+        const material = new Material({
+            uniforms: {
+                u_color: { type: '3f', value: new Vector3(Math.random(), Math.random(), Math.random()) }
+            },
+            vertexShader: `
+                attribute vec3 a_position;
 
-const a = new CubeGeometry(2, 2, 2, 5, 5, 5, true)
-const mat = new Material({
-    uniforms: {},
-    vertexShader: `
-        attribute vec3 a_position;
+                void main () {
+                    gl_Position = u_projectionMatrix * u_viewMatrix * u_modelMatrix * vec4(a_position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform vec3 u_color;
 
-        void main () {
-            gl_Position = u_projectionMatrix * u_viewMatrix * vec4(a_position, 1.0);
-        }
-    `,
-    fragmentShader: `
-        void main () {
-            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-        }
-    `
-})
-const hh = new Mesh(gl, a, mat)
+                void main () {
+                    gl_FragColor = vec4(u_color, 1.0);
+                }
+            `
+        })
+        this.mesh = new Mesh(gl, geometry, material)
+
+        this.mesh.setPosition(...position)
+        this.mesh.setScale(...scale)
+        this.mesh.material.transform.updateMatrix()
+
+    }
+    renderFrame (camera) {
+        this.mesh.activate()
+        this.mesh.renderFrame(camera)
+        this.mesh.deactivate()
+    }
+}
+
+const a = new CubeGeometry(0.2, 0.2, 0.2, 1, 1, 1)
+const boxes = []
+const boxesGrid = 5
+const spread = 2
+
+for (let y = 0; y <= boxesGrid; y += 1) {
+    for (let x = 0; x <= boxesGrid; x += 1) {
+        const tw = (boxesGrid * spread) * 0.5
+        const pos = [ x * spread - tw, 0, y * spread - tw]
+        const scale = [ 3, 1 + Math.random() * 10, 3 ]
+        boxes.push(new Box(a, pos, scale))
+    }
+}
 
 const camera = new PerspectiveCamera(w, h)
+const cameraOriginalPos = [ 0, 3, 15 ]
 const cameraLookAt = [ 0, 0, 0 ]
+camera.setPosition(...cameraOriginalPos)
+camera.lookAt(cameraLookAt)
+camera.update()
+
+const cameractrl = new CameraController(camera, $canvas)
+
 
 window.onresize = () => {
     w = window.innerWidth
@@ -213,27 +96,9 @@ function renderFrame () {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     
     gl.enable(gl.DEPTH_TEST)
-    
-    const x = Math.sin(time) * 8
-    const y = Math.cos(time) * 1
-    camera.setPosition(x, y, y)
-    camera.lookAt(cameraLookAt)
-    camera.update()
-
-    // plane.mesh.setScale(Math.sin(time) * 2, Math.sin(time) * 2)
-    // plane.mesh.setPosition(Math.sin(-time) * 2, Math.cos(-time) * 2, Math.cos(time) * 2)
-    // plane.mesh.setRotate(time, time)
-    // plane.mesh.material.transform.updateMatrix()
-
-    // plane.renderFrame(camera, time)
-
-    // triangle.renderFrame(camera, time)
-    // points.renderFrame(camera, time)
-
     gl.enable(gl.CULL_FACE)
-    hh.activate()
-    hh.renderFrame(camera)
-    hh.deactivate()
+
+    boxes.forEach(box => box.renderFrame(camera))
     
 
 }

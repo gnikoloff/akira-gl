@@ -4,6 +4,7 @@ import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import scss from 'rollup-plugin-scss'
 import glsl from 'rollup-plugin-glsl'
+import visualizer from 'rollup-plugin-visualizer'
 
 export default {
   entry: 'index.js',
@@ -11,6 +12,7 @@ export default {
   format: 'file',
   sourceMap: 'inline',
   plugins: [
+    visualizer(),
     glsl({
       include: 'src/**/*.glsl',
     }),
@@ -21,6 +23,6 @@ export default {
     commonjs(),
     babel({
       exclude: 'node_modules/**',
-    }),
-  ],
+    })
+  ]
 };

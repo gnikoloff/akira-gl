@@ -14,7 +14,7 @@ export class Mesh {
 
         material.init(gl)
         this.activate()
-        material.setUniforms()
+        material.setUniforms(gl)
         material.getAttribLocations(geometry.attribs)
         this.deactivate()
 
@@ -81,7 +81,7 @@ export class Mesh {
             
         } else {
             this.gl.drawArrays(this.drawOperation, 0, this.vertexCount) 
-        }
+        }   
 
         this.vao.vaoExtension.bindVertexArrayOES(null)
     }
