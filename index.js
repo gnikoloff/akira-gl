@@ -1,10 +1,6 @@
-import { Transform } from './gl-math'
 import { PerspectiveCamera } from './gl-camera'
 import { Geometry, Material, Mesh } from './gl-core'
 import { PlaneGeometry } from './gl-geometry-2D'
-
-new Transform()
-
 
 const $canvas = document.createElement('canvas')
 const gl = $canvas.getContext('webgl') || $canvas.getContext('experimental-webgl')
@@ -182,7 +178,6 @@ window.onresize = () => {
     $canvas.width = w
     $canvas.height = w
 
-    console.log(camera)
 }
 window.requestAnimationFrame(renderFrame)
 
@@ -205,7 +200,7 @@ function renderFrame () {
     camera.lookAt(cameraLookAt)
     camera.update()
 
-    // plane.mesh.setScale(Math.sin(time) * 20, Math.sin(time) * 20)
+    plane.mesh.setScale(Math.sin(time) * 2, Math.sin(time) * 2)
     plane.mesh.setPosition(Math.sin(-time) * 2, Math.cos(-time) * 2, Math.cos(time) * 2)
     plane.mesh.setRotate(time, time)
     plane.mesh.material.transform.updateMatrix()
