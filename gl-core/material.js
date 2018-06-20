@@ -50,6 +50,7 @@ export class Material {
             uniforms[val] = new Uniform(val, uniformCopy.type, uniformCopy.value)
         })
         this.uniforms = Object.assign(sharedUniforms, uniforms)
+        console.log(this.uniforms)
     }
 
     init (gl) {
@@ -76,14 +77,6 @@ export class Material {
             const loc = this.gl.getAttribLocation(this.program, attrib.name)
             attrib.attribLocation = loc
         })
-    }
-
-    updateUniform (uniform) {
-        if (uniform.type === 'Matrix4fv') {
-            this.gl[`uniform${uniforms.type}`](uniforms.location, false, uniforms.value)
-        } else {
-            this.gl[`uniform${uniform.type}`](uniform.location, uniform.value)
-        }
     }
 
     updateModelMatrix () {

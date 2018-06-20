@@ -18,13 +18,18 @@ class Box {
     constructor (geometry, position, scale) {
         const material = new Material({
             uniforms: {
-                u_color: { type: '3f', value: new Vector3(Math.random(), Math.random(), Math.random()) }
+                u_color: { type: '3f', value: new Vector3(Math.random(), Math.random(), Math.random()) },
+                u_time: { type: '1f', value: 0 }
             },
             vertexShader: `
+                uniform float u_time;
+
                 attribute vec3 a_position;
 
                 void main () {
-                    gl_Position = u_projectionMatrix * u_viewMatrix * u_modelMatrix * vec4(a_position, 1.0);
+                    vec3 position = a_position;
+                    position.x += sin(u_time + a_position.y) * 0.5;
+                    gl_Position = u_projectionMatrix * u_viewMatrix * u_modelMatrix * vec4(position, 1.0);
                 }
             `,
             fragmentShader: `
@@ -42,14 +47,16 @@ class Box {
         this.mesh.material.transform.updateMatrix()
 
     }
-    renderFrame (camera) {
+    renderFrame (camera, time) {
         this.mesh.activate()
+
+        this.mesh.material.uniforms.u_time.setValue(time)
         this.mesh.renderFrame(camera)
         this.mesh.deactivate()
     }
 }
 
-const a = new CubeGeometry(0.2, 0.2, 0.2, 1, 1, 1)
+const a = new CubeGeometry(0.2, 0.2, 0.2, 10, 10, 10)
 const boxes = []
 const boxesGrid = 5
 const spread = 2
@@ -97,7 +104,9 @@ function renderFrame () {
     gl.enable(gl.DEPTH_TEST)
     gl.enable(gl.CULL_FACE)
 
-    boxes.forEach(box => box.renderFrame(camera))
+    boxes.forEach(box => {
+        box.renderFrame(camera, time)
+    })
     
 
 }
