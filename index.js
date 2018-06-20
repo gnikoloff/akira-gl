@@ -170,7 +170,7 @@ document.body.appendChild($canvas)
 // const triangle = new Triangle(gl)
 // const points = new Points(gl, 22)
 
-const a = new CubeGeometry(2, 2, 2, 1, 1, 1, true)
+const a = new CubeGeometry(2, 2, 2, 5, 5, 5, true)
 const mat = new Material({
     uniforms: {},
     vertexShader: `
