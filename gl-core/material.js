@@ -85,7 +85,7 @@ export class Material {
 
     updateModelMatrix () {
         if (!this.transform.shouldUpdateMatrix) return
-        console.log('updating model matrix')
+        
         const { u_modelMatrix } = this.uniforms
         this.gl.uniformMatrix4fv(u_modelMatrix.location, false, this.transform.viewMatrix)
         this.transform.shouldUpdateMatrix = false

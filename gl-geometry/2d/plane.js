@@ -1,8 +1,10 @@
-import { Geometry } from '../gl-core'
+import { Geometry } from '../../gl-core'
 
 export class PlaneGeometry extends Geometry {
     constructor (width, height, widthSegments, heightSegments) {
         super()
+
+        this.type = 'Plane'
         
         this.vertices = this.makeVertices(widthSegments, heightSegments, width, height)
         this.uvs = this.makeUvs(widthSegments, heightSegments)
@@ -18,7 +20,7 @@ export class PlaneGeometry extends Geometry {
             this.uvs,
             2
         )
-        this.addIndices(this.indices)
+        this.addIndiceAttribute(this.indices)
 
     }
 

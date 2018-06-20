@@ -21,7 +21,7 @@ export class Geometry {
         })
     }
 
-    addIndices (array) {
+    addIndiceAttribute (array) {
         this.attribs.push({
             bufferType: ELEMENT_ARRAY_BUFFER,
             array,

@@ -1,6 +1,8 @@
 import { PerspectiveCamera } from './gl-camera'
 import { Geometry, Material, Mesh } from './gl-core'
-import { PlaneGeometry } from './gl-geometry-2D'
+import { PlaneGeometry, CubeGeometry } from './gl-geometry'
+
+
 
 const $canvas = document.createElement('canvas')
 const gl = $canvas.getContext('webgl') || $canvas.getContext('experimental-webgl')
@@ -168,6 +170,24 @@ const plane = new Plane(gl, 1, 1, 1, 1)
 const triangle = new Triangle(gl)
 const points = new Points(gl, 22)
 
+const a = new CubeGeometry(2, 2, 2)
+const mat = new Material({
+    uniforms: {},
+    vertexShader: `
+        attribute vec3 a_position;
+
+        void main () {
+            gl_Position = u_projectionMatrix * u_viewMatrix * vec4(a_position, 1.0);
+        }
+    `,
+    fragmentShader: `
+        void main () {
+            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+        }
+    `
+})
+const hh = new Mesh(gl, a, mat, 3)
+
 const camera = new PerspectiveCamera(w, h)
 const cameraLookAt = [ 0, 0, 0 ]
 
@@ -191,7 +211,7 @@ function renderFrame () {
     gl.viewport(0, 0, w, h)
     gl.clearColor(0.2, 0.2, 0.2, 1.0)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-    // gl.enable(gl.CULL_FACE)
+    
     gl.enable(gl.DEPTH_TEST)
     
     const x = Math.sin(time) * 4
@@ -209,6 +229,11 @@ function renderFrame () {
 
     triangle.renderFrame(camera, time)
     points.renderFrame(camera, time)
+
+    gl.enable(gl.CULL_FACE)
+    hh.activate()
+    hh.renderFrame(camera)
+    hh.deactivate()
     
 
 }
