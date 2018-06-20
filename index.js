@@ -166,11 +166,11 @@ $canvas.width  = w
 $canvas.height = h
 document.body.appendChild($canvas)
 
-const plane = new Plane(gl, 1, 1, 1, 1)
-const triangle = new Triangle(gl)
-const points = new Points(gl, 22)
+// const plane = new Plane(gl, 1, 1, 1, 1)
+// const triangle = new Triangle(gl)
+// const points = new Points(gl, 22)
 
-const a = new CubeGeometry(2, 2, 2)
+const a = new CubeGeometry(2, 2, 2, 1, 1, 1, true)
 const mat = new Material({
     uniforms: {},
     vertexShader: `
@@ -186,7 +186,7 @@ const mat = new Material({
         }
     `
 })
-const hh = new Mesh(gl, a, mat, 3)
+const hh = new Mesh(gl, a, mat)
 
 const camera = new PerspectiveCamera(w, h)
 const cameraLookAt = [ 0, 0, 0 ]
@@ -214,21 +214,21 @@ function renderFrame () {
     
     gl.enable(gl.DEPTH_TEST)
     
-    const x = Math.sin(time) * 4
-    const y = Math.cos(time) * 4
+    const x = Math.sin(time) * 8
+    const y = Math.cos(time) * 1
     camera.setPosition(x, y, y)
     camera.lookAt(cameraLookAt)
     camera.update()
 
-    plane.mesh.setScale(Math.sin(time) * 2, Math.sin(time) * 2)
-    plane.mesh.setPosition(Math.sin(-time) * 2, Math.cos(-time) * 2, Math.cos(time) * 2)
-    plane.mesh.setRotate(time, time)
-    plane.mesh.material.transform.updateMatrix()
+    // plane.mesh.setScale(Math.sin(time) * 2, Math.sin(time) * 2)
+    // plane.mesh.setPosition(Math.sin(-time) * 2, Math.cos(-time) * 2, Math.cos(time) * 2)
+    // plane.mesh.setRotate(time, time)
+    // plane.mesh.material.transform.updateMatrix()
 
-    plane.renderFrame(camera, time)
+    // plane.renderFrame(camera, time)
 
-    triangle.renderFrame(camera, time)
-    points.renderFrame(camera, time)
+    // triangle.renderFrame(camera, time)
+    // points.renderFrame(camera, time)
 
     gl.enable(gl.CULL_FACE)
     hh.activate()

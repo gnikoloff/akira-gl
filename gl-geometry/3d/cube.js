@@ -1,26 +1,32 @@
 import { Geometry } from '../../gl-core/geometry'
 
 export class CubeGeometry extends Geometry {
-    constructor (width = 1, height = 1, depth = 1, widthSegments = 1, heightSegments = 1, depthSegments = 1) {
+    constructor (width = 1, height = 1, depth = 1, widthSegments = 1, heightSegments = 1, depthSegments = 1, isWire = false) {
         super()
 
         this.type = 'Cube'
+        this.isWire = isWire
 
         widthSegments = Math.floor(widthSegments)
         heightSegments = Math.floor(heightSegments)
         depthSegments = Math.floor(depthSegments)
 
         this.vertices = this.makeVertices(width, height, depth, widthSegments, heightSegments, depthSegments)
-        this.indices = this.makeIndices(widthSegments, heightSegments, depthSegments)
+        const indices = this.makeIndices(widthSegments, heightSegments, depthSegments)
 
         this.addAttribute(
             'a_position',
             this.vertices,
             3
         )
-        this.addIndiceAttribute(
-            this.indices
-        )
+
+        if (isWire) {
+            this.indices = this.generateWireframeIndices(indices)
+        } else {
+            this.indices = indices
+        }
+		this.addIndiceAttribute(this.indices)	
+        
 
     }
 
@@ -82,6 +88,24 @@ export class CubeGeometry extends Geometry {
 
 		return new Float32Array(vertices)
 
+    }
+
+    generateWireframeIndices(indices, isUint16Array = true) {
+        let wireframeIndices = [];
+
+        for (let ii = 0; ii < indices.length / 3; ii++) {
+            wireframeIndices.push(indices[3 * ii]);
+            wireframeIndices.push(indices[3 * ii + 1]);
+
+            wireframeIndices.push(indices[3 * ii + 1]);
+            wireframeIndices.push(indices[3 * ii + 2]);
+
+            wireframeIndices.push(indices[3 * ii + 2]);
+            wireframeIndices.push(indices[3 * ii]);
+        }
+
+        wireframeIndices = isUint16Array ? new Uint16Array(wireframeIndices) : new Uint32Array(wireframeIndices);
+        return wireframeIndices;
     }
 
     makeIndices (widthSegments, heightSegments, depthSegments) {

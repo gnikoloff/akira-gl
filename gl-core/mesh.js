@@ -8,6 +8,7 @@ import { makeVAO } from './make-vao'
 export class Mesh {
     constructor (gl, geometry, material, drawOperation = TRIANGLES) {
         this.gl = gl
+        this.geometry = geometry
         this.material = material
         this.drawOperation = drawOperation
 
@@ -68,7 +69,16 @@ export class Mesh {
         this.vao.vaoExtension.bindVertexArrayOES(this.vao.vao)
 
         if (this.hasIndices) {
-            this.gl.drawElements(this.drawOperation, this.vertexCount, this.gl.UNSIGNED_SHORT, 0)
+            if (this.geometry.type === 'Plane') {
+                this.gl.drawElements(this.drawOperation, this.vertexCount, this.gl.UNSIGNED_SHORT, 0)
+            } else {
+                if (this.geometry.isWire) {
+                    this.gl.drawElements(3, this.vertexCount, this.gl.UNSIGNED_SHORT, 0)
+                } else {
+                    this.gl.drawElements(this.gl.TRIANGLES, this.vertexCount, this.gl.UNSIGNED_SHORT, 0)
+                }
+            }
+            
         } else {
             this.gl.drawArrays(this.drawOperation, 0, this.vertexCount) 
         }
