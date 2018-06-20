@@ -1,5 +1,6 @@
 import { Geometry } from '../../gl-core'
 
+
 export class PlaneGeometry extends Geometry {
     constructor (width, height, widthSegments, heightSegments) {
         super()

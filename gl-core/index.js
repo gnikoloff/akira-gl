@@ -1,8 +1,9 @@
 console.log('----- gl -----')
 
-export { getExtension } from './get-extension'
-export { makeShader } from './make-shader'
-export { makeProgram } from './make-program'
+export { getWebGLExtension } from './utils/get-webgl-extension'
+export { makeShader } from './utils/make-shader'
+export { makeProgram } from './utils/make-program'
+
 export { VAO } from './vao'
 export { Uniform } from './uniform'
 export { Geometry } from './geometry'

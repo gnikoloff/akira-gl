@@ -5,6 +5,9 @@ import {
     STATIC_DRAW
 } from '../gl-constants'
 
+import { bindBuffer } from './bind-buffer'
+import { updateBuffer } from './update-buffer'
+
 export class Geometry {
     constructor (attribs = []) {
         this.attribs = attribs
@@ -27,6 +30,12 @@ export class Geometry {
             array,
             mode: STATIC_DRAW
         })
+    }
+
+    updateAttribute (gl, name, array) {
+        const attrib = this.attribs.find(attrib => attrib.name === name)
+        updateBuffer(gl, attrib.buffer, attrib.attribType, array, attrib.mode)
+        // bindBuffer(gl, attrib.attribLocation, attrib.itemsPerVert, attrib.attribType, false, 0, 0)
     }
 
 }

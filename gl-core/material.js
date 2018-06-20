@@ -1,8 +1,9 @@
 import { ELEMENT_ARRAY_BUFFER } from '../gl-constants'
 import { Uniform } from './uniform'
 import { Transform } from '../gl-math'
-import { makeShader } from './make-shader'
-import { makeProgram } from './make-program'
+
+import { makeShader } from './utils/make-shader'
+import { makeProgram } from './utils/make-program'
 
 const shaderPrecisionFragment = `
     precision highp float;
@@ -50,7 +51,6 @@ export class Material {
             uniforms[val] = new Uniform(val, uniformCopy.type, uniformCopy.value)
         })
         this.uniforms = Object.assign(sharedUniforms, uniforms)
-        console.log(this.uniforms)
     }
 
     init (gl) {

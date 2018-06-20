@@ -75,7 +75,7 @@ export class Mesh {
                 if (this.geometry.isWire) {
                     this.gl.drawElements(3, this.vertexCount, this.gl.UNSIGNED_SHORT, 0)
                 } else {
-                    this.gl.drawElements(this.gl.TRIANGLES, this.vertexCount, this.gl.UNSIGNED_SHORT, 0)
+                    this.gl.drawElements(this.drawOperation, this.vertexCount, this.gl.UNSIGNED_SHORT, 0)
                 }
             }
             
@@ -84,7 +84,7 @@ export class Mesh {
         }   
 
         this.vao.unbind()
-        
+
     }
 
 

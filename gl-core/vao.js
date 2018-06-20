@@ -1,24 +1,27 @@
 import { ELEMENT_ARRAY_BUFFER } from '../gl-constants'
 
-import { getExtension } from './get-extension'
+import { getWebGLExtension } from './utils/get-webgl-extension'
 import { makeBuffer } from './make-buffer'
 import { bindBuffer } from './bind-buffer'
 
 export class VAO {
     constructor (gl, attribs) {
         
-        this.vaoExtension = getExtension(gl, `OES_vertex_array_object`)
+        this.vaoExtension = getWebGLExtension(gl, `OES_vertex_array_object`)
         this.vao = this.vaoExtension.createVertexArrayOES()
 
         this.bind()
 
         this.buffers = attribs.map(attrib => {
+            
             let { bufferType, array, mode } = attrib
             let buffer = makeBuffer(gl, bufferType, array, mode)
+            
             if (attrib.bufferType !== ELEMENT_ARRAY_BUFFER) {
                 let { attribLocation, attribType, itemsPerVert } = attrib
                 bindBuffer(gl, buffer, attribLocation, attribType, itemsPerVert)
             }
+            attrib.buffer = buffer
             return buffer
         })
 

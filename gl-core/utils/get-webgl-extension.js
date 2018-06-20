@@ -1,8 +1,8 @@
-import './vendor/oes-vertex-array-object-polyfill'
+import '../vendor/oes-vertex-array-object-polyfill'
 
 const webGLExtensions = []
 
-export const getExtension = (gl, name) => {
+export const getWebGLExtension = (gl, name) => {
     let ext = webGLExtensions.find(ext => ext.name === name)
     if (ext) return ext.extension
 
