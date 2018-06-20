@@ -1,6 +1,10 @@
+import { Transform } from './gl-math'
 import { PerspectiveCamera } from './gl-camera'
 import { Geometry, Material, Mesh } from './gl-core'
 import { PlaneGeometry } from './gl-geometry-2D'
+
+new Transform()
+
 
 const $canvas = document.createElement('canvas')
 const gl = $canvas.getContext('webgl') || $canvas.getContext('experimental-webgl')
@@ -8,44 +12,42 @@ const gl = $canvas.getContext('webgl') || $canvas.getContext('experimental-webgl
 class Plane {
     constructor (gl, width, height, widthSegment, heightSegment) {
 
-        this.geometry = new PlaneGeometry(width, height, widthSegment, heightSegment)
+    this.geometry = new PlaneGeometry(width, height, widthSegment, heightSegment)
 
-        this.material = new Material({
-            uniforms: {
-                u_time: { type: '1f', value: 0.5 },
-                u_radius: { type: '1f', value: 0.5 }
-            },
-            vertexShader: `
-                uniform float u_time;
-                uniform float u_radius;
-                
-                attribute vec2 a_position;
-                attribute vec2 a_uv;
+    this.material = new Material({
+        uniforms: {
+            u_time: { type: '1f', value: 0.5 },
+            u_radius: { type: '1f', value: 0.5 }
+        },
+        vertexShader: `
+            uniform float u_time;
+            uniform float u_radius;
+            
+            attribute vec2 a_position;
+            attribute vec2 a_uv;
 
-                varying vec2 v_uv;
+            varying vec2 v_uv;
 
-                void main () {
-                    vec2 position = vec2(
-                        a_position.x + sin(u_time) * u_radius,
-                        a_position.y + cos(u_time) * u_radius
-                    );
-                    gl_Position = u_projectionMatrix * u_viewMatrix * vec4(position, 
-                        cos(u_time + (a_position.x + a_position.y)) * u_radius
-                    , 1.0);
+            void main () {
+                vec2 position = vec2(
+                    a_position.x + sin(u_time) * u_radius,
+                    a_position.y + cos(u_time) * u_radius
+                );
+                gl_Position = u_projectionMatrix * u_viewMatrix * u_modelMatrix * vec4(a_position, 0.0, 1.0);
 
-                    v_uv = a_uv;
-                }
-            `, 
-            fragmentShader: `
-                varying vec2 v_uv;
+                v_uv = a_uv;
+            }
+        `, 
+        fragmentShader: `
+            varying vec2 v_uv;
 
-                void main () {
-                    gl_FragColor = vec4(v_uv, 0.0, 1.0);
-                }
-            `
-        })
+            void main () {
+                gl_FragColor = vec4(v_uv, 0.0, 1.0);
+            }
+        `
+    })
 
-        this.mesh = new Mesh(gl, this.geometry, this.material, 2)
+    this.mesh = new Mesh(gl, this.geometry, this.material, 2)
 
     }
 
@@ -203,7 +205,13 @@ function renderFrame () {
     camera.lookAt(cameraLookAt)
     camera.update()
 
+    // plane.mesh.setScale(Math.sin(time) * 20, Math.sin(time) * 20)
+    plane.mesh.setPosition(Math.sin(-time) * 2, Math.cos(-time) * 2, Math.cos(time) * 2)
+    plane.mesh.setRotate(time, time)
+    plane.mesh.material.transform.updateMatrix()
+
     plane.renderFrame(camera, time)
+
     triangle.renderFrame(camera, time)
     points.renderFrame(camera, time)
     

@@ -42,7 +42,21 @@ export class Mesh {
         this.material.deactivate()
     }
 
+    setPosition (x = 0, y = 0, z = 0) {
+        this.material.transform.setPosition(x, y, z)
+    }
+
+    setRotate (x = 0, y = 0, z = 0) {
+        this.material.transform.setRotate(x, y, z)
+    }
+
+    setScale (x = 1, y = 1, z = 1) {
+        this.material.transform.setScale(x, y, z)
+    }
+
     preRender (camera) {
+        this.material.updateModelMatrix()
+        
         this.material.setViewMatrix(camera.viewMatrix)
         this.material.setProjectionMatrix(camera.projectionMatrix)
     }

@@ -1,5 +1,5 @@
 import { ELEMENT_ARRAY_BUFFER } from '../gl-constants'
-
+import { Transform } from '../gl-math'
 import { makeShader } from './make-shader'
 import { makeProgram } from './make-program'
 
@@ -8,6 +8,7 @@ const shaderPrecisionFragment = `
 `
 
 const shaderSharedUniformsVertexFragment = `
+    uniform mat4 u_modelMatrix;
     uniform mat4 u_viewMatrix;
     uniform mat4 u_projectionMatrix;
 `
@@ -21,7 +22,10 @@ export class Material {
             fragmentShader
         } = props
 
+        this.transform = new Transform()
+
         const sharedUniforms = {
+            u_modelMatrix: { type: 'Matrix4fv', value: this.transform.viewMatrix },
             u_viewMatrix: { type: 'Matrix4fv', value: null },
             u_projectionMatrix: { type: 'Matrix4fv', value: null } 
         }
@@ -77,6 +81,14 @@ export class Material {
         } else {
             this.gl[`uniform${uniform.type}`](uniform.location, uniform.value)
         }
+    }
+
+    updateModelMatrix () {
+        if (!this.transform.shouldUpdateMatrix) return
+        console.log('updating model matrix')
+        const { u_modelMatrix } = this.uniforms
+        this.gl.uniformMatrix4fv(u_modelMatrix.location, false, this.transform.viewMatrix)
+        this.transform.shouldUpdateMatrix = false
     }
 
     setViewMatrix (matrix) {
