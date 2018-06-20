@@ -3,7 +3,7 @@ import {
     TRIANGLES
 } from '../gl-constants'
 
-import { makeVAO } from './make-vao'
+import { VAO } from './vao'
 
 export class Mesh {
     constructor (gl, geometry, material, drawOperation = TRIANGLES) {
@@ -18,7 +18,7 @@ export class Mesh {
         material.getAttribLocations(geometry.attribs)
         this.deactivate()
 
-        this.vao = makeVAO(gl, geometry.attribs)
+        this.vao = new VAO(gl, geometry.attribs)
 
         this.hasIndices = geometry.attribs.find(attrib => {
             if (attrib.bufferType === ELEMENT_ARRAY_BUFFER) return true
@@ -66,7 +66,7 @@ export class Mesh {
 
         this.preRender(camera)
 
-        this.vao.vaoExtension.bindVertexArrayOES(this.vao.vao)
+        this.vao.bind()
 
         if (this.hasIndices) {
             if (this.geometry.type === 'Plane') {
@@ -83,7 +83,8 @@ export class Mesh {
             this.gl.drawArrays(this.drawOperation, 0, this.vertexCount) 
         }   
 
-        this.vao.vaoExtension.bindVertexArrayOES(null)
+        this.vao.unbind()
+        
     }
 
 

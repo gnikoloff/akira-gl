@@ -6,7 +6,6 @@ import { PlaneGeometry, CubeGeometry } from './gl-geometry'
 const $canvas = document.createElement('canvas')
 const gl = $canvas.getContext('webgl') || $canvas.getContext('experimental-webgl')
 
-
 let w = window.innerWidth
 let h = window.innerHeight
 let elapsedTime = 0
@@ -73,7 +72,6 @@ camera.update()
 
 const cameractrl = new CameraController(camera, $canvas)
 
-
 window.onresize = () => {
     w = window.innerWidth
     h = window.innerHeight
@@ -82,6 +80,7 @@ window.onresize = () => {
     $canvas.height = w
 
 }
+
 window.requestAnimationFrame(renderFrame)
 
 function renderFrame () {

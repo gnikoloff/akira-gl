@@ -19,7 +19,6 @@ export class CubeGeometry extends Geometry {
             this.vertices,
             3
         )
-
         if (isWire) {
             this.indices = this.generateWireframeIndices(indices)
         } else {
