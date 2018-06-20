@@ -87,7 +87,7 @@ class Triangle {
             `,
             fragmentShader: `
                 void main () {
-                    gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
+                    gl_FragColor = vec4(vec3(0.25), 1.0);
                 }
             `
         })
@@ -105,6 +105,58 @@ class Triangle {
 
 }
 
+class Points {
+    constructor (gl, count) {
+        const geometry = new Geometry()
+
+        const step = (Math.PI * 3) / count
+
+        const vertices = new Float32Array(count * 3)
+
+        for (let i = 0; i < count; i += 1) {
+            vertices[i * 3 + 0] = Math.sin(i * step) * 1
+            vertices[i * 3 + 1] = Math.cos(i * step) * 1
+            vertices[i * 3 + 2] = i * 0.1 - count / 2 * 0.1
+        }
+        
+        geometry.addAttribute(
+            'a_position',
+            vertices,
+            3
+        )
+
+        const material = new Material({
+            uniforms: {},
+            vertexShader: `
+                attribute vec3 a_position;
+
+                void main () {
+                    gl_Position = u_projectionMatrix * u_viewMatrix * vec4(a_position, 1.0);
+                    gl_PointSize = 10.0;
+                }
+            `,
+            fragmentShader: `
+                void main () {
+                    gl_FragColor = vec4(vec3(0.5), 1.0);
+                }
+            `
+        })
+
+        this.mesh = new Mesh(gl, geometry, material, 0)
+        this.mesh2 = new Mesh(gl, geometry, material, 1)
+
+    }
+    
+    renderFrame (camera, time) {
+        this.mesh.activate()
+
+        this.mesh.renderFrame(camera)
+        this.mesh2.renderFrame(camera)
+
+        this.mesh.deactivate()
+    }
+}
+
 
 let w = window.innerWidth
 let h = window.innerHeight
@@ -115,14 +167,21 @@ $canvas.height = h
 document.body.appendChild($canvas)
 
 const plane = new Plane(gl, 1, 1, 1, 1)
-const triangle = new Triangle(gl, 5)
+const triangle = new Triangle(gl)
+const points = new Points(gl, 22)
 
 const camera = new PerspectiveCamera(w, h)
 const cameraLookAt = [ 0, 0, 0 ]
-camera.translate(4, 0, 4)
-camera.lookAt(cameraLookAt)  
-camera.update()
 
+window.onresize = () => {
+    w = window.innerWidth
+    h = window.innerHeight
+
+    $canvas.width = w
+    $canvas.height = w
+
+    console.log(camera)
+}
 window.requestAnimationFrame(renderFrame)
 
 function renderFrame () {
@@ -138,14 +197,15 @@ function renderFrame () {
     // gl.enable(gl.CULL_FACE)
     gl.enable(gl.DEPTH_TEST)
     
-    const x = Math.sin(time) * 3
-    const y = Math.cos(time) * 3
+    const x = Math.sin(time) * 4
+    const y = Math.cos(time) * 4
     camera.setPosition(x, y, y)
     camera.lookAt(cameraLookAt)
     camera.update()
 
     plane.renderFrame(camera, time)
     triangle.renderFrame(camera, time)
+    points.renderFrame(camera, time)
     
 
 }
