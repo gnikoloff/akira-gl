@@ -44,6 +44,8 @@ export class ArrayBuffer {
         this._program = program
 
         this._location = this._gl.getAttribLocation(program, this._name)
+        if (this._location === -1) return
+
         this._buffer = this._gl.createBuffer()
         
         this.bind()
@@ -56,6 +58,8 @@ export class ArrayBuffer {
     }
 
     bindToVAO () {
+        if (this._location === -1) return
+        
         this.bind()
         this._gl.enableVertexAttribArray(this._location)
         this._gl.vertexAttribPointer(
