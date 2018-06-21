@@ -10,7 +10,7 @@ export class Transform {
         this.rotation = new Vector3()
 
         this.viewMatrix = mat4.create()
-        this.normalMatrix = mat4.create()
+        this.transposeViewMatrix = mat4.create()
         
         this.shouldUpdateMatrix = false
 
@@ -45,6 +45,8 @@ export class Transform {
         mat4.rotateY(this.viewMatrix, this.viewMatrix, this.rotation.y)
         mat4.rotateZ(this.viewMatrix, this.viewMatrix, this.rotation.z)
         mat4.scale(this.viewMatrix, this.viewMatrix, this.scale.vector)
+
+        mat4.transpose(this.transposeViewMatrix, this.viewMatrix)
     }
 
     reset () {

@@ -14,7 +14,9 @@ export class Uniform {
     setValue (val) {
         let value = val ? val : this.value
         if (!value) return
-
+        
+        this.value = value
+        
         switch (this.type) {
             case '1f':
                 this.gl.uniform1f(this.location, value)

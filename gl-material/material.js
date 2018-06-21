@@ -40,9 +40,10 @@ export class Material {
 
     generateUniforms (uniforms) {
         const sharedUniforms = {
-            u_modelMatrix:      new Uniform('u_modelMatrix', 'matrix4fv', this.transform.viewMatrix),
-            u_viewMatrix:       new Uniform('u_viewMatrix', 'matrix4fv'),
-            u_projectionMatrix: new Uniform('u_projectionMatrix', 'matrix4fv')
+            u_modelMatrix:          new Uniform('u_modelMatrix', 'matrix4fv', this.transform.viewMatrix),
+            u_transposeModelMatrix: new Uniform('u_transposeModelMatrix', 'matrix4fv', this.transform.transposeViewMatrix),
+            u_viewMatrix:           new Uniform('u_viewMatrix', 'matrix4fv'),
+            u_projectionMatrix:     new Uniform('u_projectionMatrix', 'matrix4fv')
         }
         Object.keys(uniforms).forEach(val => {
             const uniformCopy = uniforms[val]
