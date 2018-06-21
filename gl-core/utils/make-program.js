@@ -1,3 +1,11 @@
+/**
+ * Compile a WebGLProgram using supplied vertex and fragment shaders
+ * @param {WebGLRenderingContext} gl - WebGL Context
+ * @param {WebGLShader} vertexShader - compiled vertex shader object
+ * @param {WebGLShader} fragmentShader - compiled fragment shader object
+ * @returns {WebGLProgram} 
+ */
+
 export const makeProgram = (gl, vertexShader, fragmentShader) => {
     let program = gl.createProgram()
     gl.attachShader(program, vertexShader)

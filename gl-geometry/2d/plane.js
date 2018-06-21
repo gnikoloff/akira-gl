@@ -1,5 +1,13 @@
 import { Geometry } from '../../gl-core'
 
+/**
+ * Plane geometry wrapper with vertices, uvs and indices
+ * @constructor 
+ * @param {number} width - plane's width
+ * @param {number} height - plane's height
+ * @param {number} widthSegments - plane's x segments
+ * @param {number} heightSegments - plane's y segments
+ */
 
 export class PlaneGeometry extends Geometry {
     constructor (width, height, widthSegments, heightSegments) {

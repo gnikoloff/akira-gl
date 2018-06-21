@@ -76,13 +76,18 @@ class Box {
     constructor (geometry, position, scale) {
         const material = new Material({
             uniforms: {
-                u_color: { type: '3f', value: new Vector3(Math.random(), Math.random(), Math.random()) }
+                u_color: { type: '3f', value: new Vector3(Math.random(), Math.random(), Math.random()) },
+                u_time: { type: '1f', value: 0 }
             },
             vertexShader: `
+                uniform float u_time;
+
                 attribute vec3 a_position;
 
                 void main () {
                     vec3 position = a_position;
+                    position.x += sin(u_time + position.y) * position.y;
+                    position.y += cos(u_time + position.x) * position.y;
                     gl_Position = u_projectionMatrix * u_viewMatrix * u_modelMatrix * vec4(position, 1.0);
                 }
             `,
@@ -103,12 +108,13 @@ class Box {
     }
     renderFrame (camera, time) {
         this.mesh.activate()
+        this.mesh.material.uniforms.u_time.setValue(time)
         this.mesh.renderFrame(camera)
         this.mesh.deactivate()
     }
 }
 
-const a = new CubeGeometry(0.2, 0.2, 0.2, 1, 1, 1)
+const a = new CubeGeometry(0.2, 0.2, 0.2, 10, 10, 10)
 const boxes = []
 const boxesGrid = 6
 const spread = 2
@@ -123,8 +129,6 @@ for (let y = 0; y <= boxesGrid; y += 1) {
 }
 
 const line = new Line(gl, 10)
-
-console.log(line)
 
 const camera = new PerspectiveCamera(w, h)
 const cameraOriginalPos = [ 0, 3, 15 ]
@@ -172,7 +176,7 @@ function renderFrame () {
         box.renderFrame(camera, time)
     })
 
-    line.renderFrame(camera)
+    // line.renderFrame(camera)
     
 
 }

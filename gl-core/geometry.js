@@ -8,6 +8,7 @@ import {
 import { bindBuffer } from './bind-buffer'
 import { updateBuffer } from './update-buffer'
 
+
 export class Geometry {
     constructor (attribs = []) {
         this.attribs = attribs

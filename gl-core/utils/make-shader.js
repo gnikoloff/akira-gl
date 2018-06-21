@@ -1,3 +1,11 @@
+/**
+ * Compile a WebGLProgram using supplied vertex and fragment shaders
+ * @param {WebGLRenderingContext} gl - WebGL Context
+ * @param {number} type - Shader's type constant
+ * @param {string} source - Shader's source string
+ * @returns {WebGLShader} 
+ */
+
 export const makeShader = (gl, type, source) => {
     let shader = gl.createShader(type)
     gl.shaderSource(shader, source)
