@@ -53,30 +53,28 @@ export class Material {
         this.uniforms = Object.assign(sharedUniforms, uniforms)
     }
 
-    init (gl) {
+    init (gl, attribs) {
         this.gl = gl
         const vertexShader = makeShader(gl, gl.VERTEX_SHADER, this.vertexShaderSource)
         const fragmentShader = makeShader(gl, gl.FRAGMENT_SHADER, this.fragmentShaderSource)
 
         this.program = makeProgram(gl, vertexShader, fragmentShader)
-        
-    }
 
-    setUniforms () {
+        this.activate()
+
         const { uniforms } = this
         Object.keys(uniforms).forEach(val => {
             uniforms[val].setLocation(this.gl, this.program)
             uniforms[val].setValue()
         })
         this.uniforms = uniforms
-    }
 
-    getAttribLocations (attribs) {
         attribs.forEach(attrib => {
-            if (attrib.bufferType === ELEMENT_ARRAY_BUFFER) return
-            const loc = this.gl.getAttribLocation(this.program, attrib.name)
-            attrib.attribLocation = loc
+            attrib.init(this.gl, this.program)
         })
+
+        this.deactivate()
+        
     }
 
     updateModelMatrix () {

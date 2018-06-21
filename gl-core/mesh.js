@@ -12,12 +12,7 @@ export class Mesh {
         this.material = material
         this.drawOperation = drawOperation
 
-        material.init(gl)
-        this.activate()
-        material.setUniforms(gl)
-        material.getAttribLocations(geometry.attribs)
-        this.deactivate()
-
+        material.init(gl, geometry.attribs)
         this.vao = new VAO(gl, geometry.attribs)
 
         this.hasIndices = geometry.attribs.find(attrib => {
@@ -30,17 +25,18 @@ export class Mesh {
             const vertices = geometry.attribs.find(attrib => {
                 if (attrib.name === 'a_position') return attrib
             })
-            const { itemsPerVert } = vertices
-            this.vertexCount = vertices.array.length / itemsPerVert
+            this.vertexCount = vertices.count
         }
     }
     
     activate () {
         this.material.activate()
+        this.vao.bind()
     }
 
     deactivate () {
         this.material.deactivate()
+        this.vao.unbind()
     }
 
     setPosition (x = 0, y = 0, z = 0) {
@@ -65,8 +61,6 @@ export class Mesh {
     renderFrame (camera) {
 
         this.preRender(camera)
-
-        this.vao.bind()
 
         if (this.hasIndices) {
             if (this.geometry.type === 'Plane') {

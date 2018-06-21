@@ -5,8 +5,10 @@ import {
     STATIC_DRAW
 } from '../gl-constants'
 
-import { bindBuffer } from './bind-buffer'
-import { updateBuffer } from './update-buffer'
+import { ArrayBuffer } from './array-buffer'
+
+// import { bindBuffer } from './bind-buffer'
+// import { updateBuffer } from './update-buffer'
 
 
 export class Geometry {
@@ -14,15 +16,16 @@ export class Geometry {
         this.attribs = attribs
     }
 
-    addAttribute (name, array, itemsPerVert = 2, mode = STATIC_DRAW) {
-        this.attribs.push({
+    addAttribute (name, array, size = 2, type = FLOAT, normalize = false, stride = 0, offset = 0) {
+        this.attribs.push(new ArrayBuffer(
             name,
-            bufferType: ARRAY_BUFFER,
             array,
-            attribType: FLOAT,
-            itemsPerVert,
-            mode
-        })
+            size,
+            type,
+            normalize,
+            stride,
+            offset
+        ))
     }
 
     addIndiceAttribute (array) {

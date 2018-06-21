@@ -48,23 +48,24 @@ class Line {
             `
         })
 
-        this.mesh = new Mesh(gl, geometry, material, 2)
+        this.mesh = new Mesh(gl, geometry, material, 3)
 
     }
 
     renderFrame (camera) {
         this.mesh.activate()
 
-        // const a_position = this.mesh.geometry.attribs.find(attrib => {
-        //     return attrib.name === 'a_position'
-        // })
-        // const positionArr = a_position.array
-        // const count = positionArr.length / a_position.itemsPerVert
-        // for (let i = 0; i < count; i += 1) {
-        //     positionArr[i * 3 + 1] += 1
-        // }
+        const a_position = this.mesh.geometry.attribs.find(attrib => {
+            return attrib.name === 'a_position'
+        })
+        const positionArray = a_position.array
+        const { count } = a_position
 
-        // this.mesh.geometry.updateAttribute(gl, a_position.name, positionArr)
+        for (let i = 0; i < count; i += 1) {
+            positionArray[i * 3 + 1] += Math.random() * 0.1 - 0.05
+        }
+
+        a_position.update()
 
         this.mesh.renderFrame(camera)
         this.mesh.deactivate()
@@ -176,7 +177,7 @@ function renderFrame () {
         box.renderFrame(camera, time)
     })
 
-    // line.renderFrame(camera)
+    line.renderFrame(camera)
     
 
 }

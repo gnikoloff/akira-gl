@@ -13,19 +13,7 @@ export class VAO {
         this.bind()
 
         this.buffers = attribs.map(attrib => {
-            
-
-            // HERE WE SHOULD BIND THE ALREADY INITIALIZED ATTRIBUTES!
-
-            // let { bufferType, array, mode } = attrib
-            // let buffer = makeBuffer(gl, bufferType, array, mode)
-            
-            // if (attrib.bufferType !== ELEMENT_ARRAY_BUFFER) {
-            //     let { attribLocation, attribType, itemsPerVert } = attrib
-            //     bindBuffer(gl, buffer, attribLocation, attribType, itemsPerVert)
-            // }
-            // attrib.buffer = buffer
-            // return buffer
+            attrib.bindToVAO()
         })
 
         this.unbind()
