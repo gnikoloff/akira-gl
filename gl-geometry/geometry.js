@@ -14,7 +14,15 @@ export class Geometry {
         this.buffers = buffers
     }
 
-    addAttribute (name, array, size = 2, type = FLOAT, normalize = false, stride = 0, offset = 0) {
+    addAttribute (
+        name, 
+        array, 
+        size = 2, 
+        type = FLOAT, 
+        normalize = false, 
+        stride = 0,
+        offset = 0
+    ) {
         this.buffers.push(new ArrayBuffer(
             name,
             array,
