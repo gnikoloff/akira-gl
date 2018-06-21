@@ -28,14 +28,17 @@ export class Uniform {
             case '4f':
                 this.gl.uniform4f(this.location, ...value.getArray())
                 break
-            case 'Matrix2fv':
+            case 'matrix2fv':
                 this.gl.uniformMatrix2fv(this.location, false, value)
                 break
-            case 'Matrix3fv':
+            case 'matrix3fv':
                 this.gl.uniformMatrix3fv(this.location, false, value)
                 break
-            case 'Matrix4fv':
+            case 'matrix4fv':
                 this.gl.uniformMatrix4fv(this.location, false, value)
+                break
+            case 't':
+                this.gl.uniform1i(this.location, this.value)
                 break
         }
     }

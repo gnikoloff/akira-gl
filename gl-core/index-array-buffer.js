@@ -19,7 +19,7 @@ export class IndexArrayBuffer {
     init (gl) {
         this._gl = gl
 
-        this._buffer = gl.createBuffer()
+        this._buffer = gl.createBuffer()    
     }
 
     bindToVAO () {

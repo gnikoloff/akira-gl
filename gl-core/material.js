@@ -24,6 +24,8 @@ export class Material {
             fragmentShader
         } = props
 
+        this.textures = []
+        this.texCount = 0
         this.transform = new Transform()
 
         this.generateUniforms(uniforms)
@@ -42,15 +44,23 @@ export class Material {
 
     generateUniforms (uniforms) {
         const sharedUniforms = {
-            u_modelMatrix: new Uniform('u_modelMatrix', 'Matrix4fv', this.transform.viewMatrix),
-            u_viewMatrix: new Uniform('u_viewMatrix', 'Matrix4fv'),
-            u_projectionMatrix: new Uniform('u_projectionMatrix', 'Matrix4fv')
+            u_modelMatrix:      new Uniform('u_modelMatrix', 'matrix4fv', this.transform.viewMatrix),
+            u_viewMatrix:       new Uniform('u_viewMatrix', 'matrix4fv'),
+            u_projectionMatrix: new Uniform('u_projectionMatrix', 'matrix4fv')
         }
         Object.keys(uniforms).forEach(val => {
             const uniformCopy = uniforms[val]
             uniforms[val] = new Uniform(val, uniformCopy.type, uniformCopy.value)
         })
         this.uniforms = Object.assign(sharedUniforms, uniforms)
+
+        // textures
+        Object.keys(this.uniforms).map(key => {
+            if (this.uniforms[key].type === 't') {
+                this.textures.push(this.uniforms[key].value)
+            }
+        })
+        console.log(this.textures)
     }
 
     init (gl, buffers) {
@@ -94,6 +104,10 @@ export class Material {
 
     activate () {
         this.gl.useProgram(this.program)
+        this.textures.forEach((tex, i) => {
+            tex.bind()
+            tex.activate(i)
+        })
         return this
     }
 
