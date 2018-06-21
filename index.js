@@ -1,6 +1,6 @@
 import { PerspectiveCamera, CameraController } from './gl-camera'
 import { Mesh, Texture } from './gl-core'
-import { SphereGeometry, CubeGeometry } from './gl-geometry'
+import { SphereGeometry, CubeGeometry, CylinderGeometry } from './gl-geometry'
 import { Material } from './gl-material'
 
 const $canvas = document.createElement('canvas')
@@ -44,9 +44,7 @@ tex
     .fromImage(a)
 
 
-
-
-const geo = new SphereGeometry()
+const geo = new CylinderGeometry(2, 2, 5, 10)
 // geo.isWire = true
 const mat = new Material({
     uniforms: {
@@ -123,7 +121,7 @@ function renderFrame () {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     
     gl.enable(gl.DEPTH_TEST)
-    gl.enable(gl.CULL_FACE)
+    // gl.enable(gl.CULL_FACE)
 
     mesh
         .activate()
