@@ -10,8 +10,14 @@ export class ColorMaterial extends Material {
         const b = ((colorHEX            ) % 256) / 255
 
         const uniforms = {
-            u_color: { type: '3f', value: new Vector3(r, g, b) },
-            u_opacity: { type: '1f', value: opacity ? opacity : 1 }
+            u_color: { type: '3f', value: new Vector3(r, g, b) }
+        }
+
+        if (opacity) {
+            uniforms.u_opacity = { 
+                type: '1f', 
+                value: opacity
+            }
         }
         
         const vertexShader = `
@@ -26,10 +32,10 @@ export class ColorMaterial extends Material {
         `
         const fragmentShader = `
             uniform vec3 u_color;
-            uniform float u_opacity;
+            ${opacity ? 'uniform float u_opacity;' : ''}
 
             void main () {
-                gl_FragColor = vec4(u_color, u_opacity);
+                gl_FragColor = vec4(u_color, ${opacity ? 'u_opacity' : ''});
             }
         `
 
