@@ -1,6 +1,6 @@
 import { PerspectiveCamera, CameraController } from './gl-camera'
 import { Mesh, Texture } from './gl-core'
-import { CubeGeometry } from './gl-geometry'
+import { SphereGeometry, CubeGeometry } from './gl-geometry'
 import { Material } from './gl-material'
 
 const $canvas = document.createElement('canvas')
@@ -44,7 +44,10 @@ tex
     .fromImage(a)
 
 
-const geo = new CubeGeometry(3, 3, 3, 10, 10, 10)
+
+
+const geo = new SphereGeometry()
+// geo.isWire = true
 const mat = new Material({
     uniforms: {
         u_sampler: { type: 't', value: tex }
@@ -72,7 +75,7 @@ const mat = new Material({
         varying vec2 v_uv;
         varying vec3 v_normal;
 
-        const vec3 lightPosition = vec3(-0.5, 0.5, 20.0);
+        const vec3 lightPosition = vec3(-0.5, 0.5, 0.6);
 
         void main () {
             vec3 normal = normalize(v_normal);
@@ -83,6 +86,8 @@ const mat = new Material({
     `
 })
 const mesh = new Mesh(gl, geo, mat)
+mesh.setScale(1, 1, 1)
+mesh.material.transform.updateMatrix()
 
 $canvas.addEventListener('mousemove', e => {
     const mousex = (e.pageX - window.innerWidth / 2) / window.innerWidth
@@ -118,7 +123,7 @@ function renderFrame () {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     
     gl.enable(gl.DEPTH_TEST)
-    // gl.enable(gl.CULL_FACE)
+    gl.enable(gl.CULL_FACE)
 
     mesh
         .activate()
