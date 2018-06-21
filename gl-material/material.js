@@ -5,15 +5,8 @@ import { Transform } from '../gl-math'
 import { makeShader } from '../gl-core/utils/make-shader'
 import { makeProgram } from '../gl-core/utils/make-program'
 
-const shaderPrecisionFragment = `
-    precision highp float;
-`
-
-const shaderSharedUniformsVertexFragment = `
-    uniform mat4 u_modelMatrix;
-    uniform mat4 u_viewMatrix;
-    uniform mat4 u_projectionMatrix;
-`
+import { shaderSharedUniformsVertexFragment } from './shader-bits/shared-uniforms'
+import { shaderPrecisionFragment } from './shader-bits/shader-precision'
 
 export class Material {
     constructor (props) {
@@ -21,12 +14,15 @@ export class Material {
         const {
             uniforms,
             vertexShader,
-            fragmentShader
+            fragmentShader,
+            transparent
         } = props
 
         this.textures = []
         this.texCount = 0
         this.transform = new Transform()
+
+        this.transparent = transparent
 
         this.generateUniforms(uniforms)
 
@@ -108,10 +104,19 @@ export class Material {
             tex.bind()
             tex.activate(i)
         })
+
+        if (this.transparent) {
+            this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA)
+            this.gl.enable(this.gl.BLEND)
+        }
+
         return this
     }
 
     deactivate () {
+        if (this.transparent) {
+            this.gl.disable(this.gl.BLEND)
+        }
         this.gl.useProgram(null)
         return this
     }
