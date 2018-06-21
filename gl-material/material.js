@@ -1,9 +1,9 @@
 import { ELEMENT_ARRAY_BUFFER } from '../gl-constants'
-import { Uniform } from './uniform'
+import { Uniform } from '../gl-core/uniform'
 import { Transform } from '../gl-math'
 
-import { makeShader } from './utils/make-shader'
-import { makeProgram } from './utils/make-program'
+import { makeShader } from '../gl-core/utils/make-shader'
+import { makeProgram } from '../gl-core/utils/make-program'
 
 const shaderPrecisionFragment = `
     precision highp float;
