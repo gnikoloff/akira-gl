@@ -5,8 +5,8 @@ import {
     STATIC_DRAW
 } from '../gl-constants'
 
-import { ArrayBuffer } from './array-buffer'
-import { IndexArrayBuffer } from './index-array-buffer'
+import { ArrayBuffer } from '../gl-core/array-buffer'
+import { IndexArrayBuffer } from '../gl-core/index-array-buffer'
 
 export class Geometry {
     

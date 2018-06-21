@@ -1,4 +1,4 @@
-import { Geometry } from '../../gl-core'
+import { Geometry } from '../geometry'
 
 /**
  * Plane geometry wrapper with vertices, uvs and indices
