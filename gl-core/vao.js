@@ -10,7 +10,7 @@ export class VAO {
 
         this.bind()
 
-        this.buffers = buffers.map(buffer => {
+        buffers.forEach(buffer => {
             buffer.bindToVAO()
         })
 
