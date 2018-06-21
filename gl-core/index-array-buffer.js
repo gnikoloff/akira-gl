@@ -20,13 +20,16 @@ export class IndexArrayBuffer {
         this._gl = gl
 
         this._buffer = gl.createBuffer()
-        console.log(this)
     }
 
     bindToVAO () {
         this.bind()
         this.setData()
-        this.unbind()
+
+        // why index buffers should not be unbound 
+        // when binded to vaos ??
+
+        // this.unbind()
     }
 
     setData () {
