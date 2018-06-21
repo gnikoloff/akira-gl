@@ -11,7 +11,7 @@ import { generateWireframeIndices } from '../utils'
  * @param {number} heightSegments - cube's y segments
  * @param {number} depthSegments - cube's z segments
  * @param {boolean} isWire - will the cube be rendered with lines?
- */
+*/
 
 export class CubeGeometry extends Geometry {
     constructor (width = 1, height = 1, depth = 1, widthSegments = 1, heightSegments = 1, depthSegments = 1, isWire = false) {
@@ -35,7 +35,7 @@ export class CubeGeometry extends Geometry {
 		const { uvs } = verticesUvs
 		const normals = CubeGeometry.makeNormals(widthSegments, heightSegments, depthSegments)
 
-		if (isWire) {
+		if (this.isWire) {
 			this.indices = generateWireframeIndices(
 				CubeGeometry.getIndices(widthSegments, heightSegments, depthSegments)
 			)
