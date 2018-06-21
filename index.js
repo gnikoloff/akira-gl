@@ -1,7 +1,7 @@
 import { PerspectiveCamera, CameraController } from './gl-camera'
-import { Material, Mesh, Texture } from './gl-core'
-import { Vector3 } from './gl-math'
-import { PlaneGeometry } from './gl-geometry'
+import { Mesh, Texture } from './gl-core'
+import { CubeGeometry } from './gl-geometry'
+import { Material } from './gl-material'
 
 const $canvas = document.createElement('canvas')
 const gl = $canvas.getContext('webgl') || $canvas.getContext('experimental-webgl')
@@ -18,102 +18,59 @@ const camera = new PerspectiveCamera(w, h)
 const cameraOriginalPos = [ 0, 3, 25 ]
 const cameraLookAt = [ 0, 0, 0 ]
 
+const a = document.createElement('canvas')
+const ctx = a.getContext('2d')
 
-class Plane {
-    constructor (gl, width, height) {
+a.width = 512
+a.height = 512
+document.body.appendChild(a)
 
-        this.videoLoad = false
+ctx.fillRect(0, 0, a.width, a.height)
+ctx.fillStyle = 'red'
+ctx.strokeStyle = 'green'
+ctx.lineWidth = 20
+ctx.beginPath()
+ctx.arc(a.width / 2, a.height / 2, 100, 0, Math.PI * 2, true)
+ctx.closePath()
+ctx.fill()
+ctx.stroke()
 
-        const img = document.createElement('img')
-        const texture = new Texture(gl)
+const tex = new Texture(gl)
+tex
+    .bind()
+    .setFilter()
+    .wrap()
+    .fromImage(a)
 
-        const video = document.createElement('video')
-        video.src = '12943877.mp4'
-        video.onloadedmetadata = () => {
-            document.body.appendChild(video)
-            video.muted = true
-            video.loop = true
 
-            this.canvas = document.createElement('canvas')
-            this.ctx = this.canvas.getContext('2d')
-            this.canvas.width = video.videoWidth
-            this.canvas.height = video.videoHeight
+const geo = new CubeGeometry(3, 3, 3, 10, 10, 10)
+const mat = new Material({
+    uniforms: {
+        u_sampler: { type: 't', value: tex }
+    },
+    vertexShader: `
+        attribute vec3 a_position;
+        attribute vec2 a_uv;
 
-            document.body.appendChild(this.canvas)
-            document.body.appendChild(video)
+        varying vec2 v_uv;
 
-            this.video = video
-            video.play()
+        void main () {
+            gl_Position = u_projectionMatrix * u_viewMatrix * u_modelMatrix * vec4(a_position, 1.0);
 
-            texture
-                .bind()
-                .setFilter()
-                .wrap()
-                .unbind()
-
-            this.texture = texture
-
-            this.geometry = new PlaneGeometry(width, height, 50, 50)
-            this.material = new Material({
-                uniforms: {
-                    u_time: { type: '1f', value: 0 },
-                    u_sampler: { type: 't', value: texture }
-                },
-                vertexShader: `
-                    uniform float u_time;
-
-                    attribute vec2 a_position;
-                    attribute vec2 a_uv;
-
-                    varying vec2 v_uv;
-
-                    void main () {
-                        float dist = distance(vec2(0.0), vec2(a_position.x, a_position.y));
-                        float z = sin(u_time * 5.0 - dist * 2.0) * 1.25;
-                        gl_Position = u_projectionMatrix * u_viewMatrix * u_modelMatrix * vec4(a_position, z, 1.0);
-
-                        v_uv = a_uv;
-                    }
-                `,
-                fragmentShader: `
-                    uniform sampler2D u_sampler;
-
-                    varying vec2 v_uv;
-
-                    void main () {
-                        gl_FragColor = texture2D(u_sampler, v_uv);
-                        // gl_FragColor = vec4(v_uv, 0.0, 1.0);
-                    }
-                `
-            })
-
-            this.mesh = new Mesh(gl, this.geometry, this.material)
-            this.mesh.setPosition(0, 0, 0)
-            this.mesh.material.transform.updateMatrix()
-
-            this.videoLoad = true
+            v_uv = a_uv;
         }
+    `,
+    fragmentShader: `
+        uniform sampler2D u_sampler;
 
-    }
+        varying vec2 v_uv;
 
-    renderFrame (camera, time) {       
-        if (!this.videoLoad) return
-
-        this.ctx.drawImage(this.video, 0, 0)
-        this.texture
-            .bind()
-            .fromImage(this.video)
-            .unbind()
-
-        this.mesh.activate()
-        this.mesh.material.uniforms.u_time.setValue(time)
-        this.mesh.renderFrame(camera)
-        this.mesh.deactivate()
-    }
-
-}
-
-const plane = new Plane(gl, 16, 9)
+        void main () {
+            gl_FragColor = texture2D(u_sampler, v_uv);
+        }
+    `
+})
+const mesh = new Mesh(gl, geo, mat)
 
 $canvas.addEventListener('mousemove', e => {
     const mousex = (e.pageX - window.innerWidth / 2) / window.innerWidth
@@ -151,7 +108,10 @@ function renderFrame () {
     gl.enable(gl.DEPTH_TEST)
     gl.enable(gl.CULL_FACE)
 
-    plane.renderFrame(camera, time)
+    mesh
+        .activate()
+        .renderFrame(camera)
+        .deactivate()
     
 
 }

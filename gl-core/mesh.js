@@ -32,11 +32,13 @@ export class Mesh {
     activate () {
         this.material.activate()
         this.vao.bind()
+        return this
     }
 
     deactivate () {
         this.material.deactivate()
         this.vao.unbind()
+        return this
     }
 
     setPosition (x = 0, y = 0, z = 0) {
@@ -76,6 +78,8 @@ export class Mesh {
         } else {
             this.gl.drawArrays(this.drawOperation, 0, this.vertexCount) 
         }   
+
+        return this
 
     }
 
