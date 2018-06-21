@@ -53,7 +53,7 @@ export class Material {
         this.uniforms = Object.assign(sharedUniforms, uniforms)
     }
 
-    init (gl, attribs) {
+    init (gl, buffers) {
         this.gl = gl
         const vertexShader = makeShader(gl, gl.VERTEX_SHADER, this.vertexShaderSource)
         const fragmentShader = makeShader(gl, gl.FRAGMENT_SHADER, this.fragmentShaderSource)
@@ -69,8 +69,8 @@ export class Material {
         })
         this.uniforms = uniforms
 
-        attribs.forEach(attrib => {
-            attrib.init(this.gl, this.program)
+        buffers.forEach(buffer => {
+            buffer.init(this.gl, this.program)
         })
 
         this.deactivate()

@@ -55,7 +55,7 @@ class Line {
     renderFrame (camera) {
         this.mesh.activate()
 
-        const a_position = this.mesh.geometry.attribs.find(attrib => {
+        const a_position = this.mesh.geometry.buffers.find(attrib => {
             return attrib.name === 'a_position'
         })
         const positionArray = a_position.array

@@ -11,18 +11,18 @@ export class Mesh {
         this.geometry = geometry
         this.material = material
         this.drawOperation = drawOperation
+        
+        material.init(gl, geometry.buffers)
+        this.vao = new VAO(gl, geometry.buffers)
 
-        material.init(gl, geometry.attribs)
-        this.vao = new VAO(gl, geometry.attribs)
-
-        this.hasIndices = geometry.attribs.find(attrib => {
-            if (attrib.bufferType === ELEMENT_ARRAY_BUFFER) return true
+        this.hasIndices = geometry.buffers.find(attrib => {
+            if (attrib.type === ELEMENT_ARRAY_BUFFER) return true
         })
 
         if (this.hasIndices) {
             this.vertexCount = geometry.indices.length
         } else {
-            const vertices = geometry.attribs.find(attrib => {
+            const vertices = geometry.buffers.find(attrib => {
                 if (attrib.name === 'a_position') return attrib
             })
             this.vertexCount = vertices.count
@@ -76,8 +76,6 @@ export class Mesh {
         } else {
             this.gl.drawArrays(this.drawOperation, 0, this.vertexCount) 
         }   
-
-        this.vao.unbind()
 
     }
 

@@ -1,7 +1,14 @@
-import { FLOAT, STATIC_DRAW } from '../gl-constants'
+import { 
+    FLOAT, 
+    STATIC_DRAW,
+    ARRAY_BUFFER 
+} from '../gl-constants'
 
 export class ArrayBuffer {
     constructor (name, array, size = 2, type = FLOAT, normalize = false, stride = 0, offset = 0, mode = STATIC_DRAW) {
+
+        this._type = ARRAY_BUFFER
+
         this._name = name
         this._array = array
         this._size = size
@@ -10,6 +17,10 @@ export class ArrayBuffer {
         this._stride = stride
         this._offset = offset
         this._mode = mode
+    }
+
+    get type () {
+        return this._type
     }
 
     get size () {
