@@ -70,7 +70,7 @@ export class SphereGeometry extends Geometry {
 			let v = y / heightSegments
 
 			for (let x = 0; x <= widthSegments; x += 1) {
-				var u = x / widthSegments
+				let u = x / widthSegments
 				let phi = phiStart + phiLength * u
 				let theta = thetaStart + thetaLength * v
 
