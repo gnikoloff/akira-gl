@@ -33,6 +33,7 @@ export class CubeGeometry extends Geometry {
 		)
 		const { vertices } = verticesUvs
 		const { uvs } = verticesUvs
+		const normals = CubeGeometry.makeNormals(widthSegments, heightSegments, depthSegments)
 
 		if (isWire) {
 			this.indices = generateWireframeIndices(
@@ -42,11 +43,14 @@ export class CubeGeometry extends Geometry {
 			this.indices = CubeGeometry.getIndices(widthSegments, heightSegments, depthSegments)
 		}
 
-		console.log(this.indices)
-		
 		this.addAttribute(
 			'a_position',
 			vertices,
+			3
+		)
+		this.addAttribute(
+			'a_normal',
+			normals,
 			3
 		)
 		this.addAttribute(
@@ -130,6 +134,45 @@ export class CubeGeometry extends Geometry {
 			vertices: new Float32Array(vertices), 
 			uvs: new Float32Array(uvs)
 		}
+	}
+
+	static makeNormals (widthSegment, heightSegment, depthSegment) {
+		let normals = []
+
+		for (let ii = 0; ii < 2; ii++) {
+			let dir = ii == 0 ? -1 : 1
+			for (let yy = 0; yy <= depthSegment; yy++) {
+				for (let xx = 0; xx <= widthSegment; xx++) {
+					normals.push(0)
+					normals.push(dir)
+					normals.push(0)
+				}
+			}
+		}
+
+		for (let ii = 0; ii < 2; ii++) {
+			let dir = ii == 0 ? -1 : 1
+			for (let yy = 0; yy <= heightSegment; yy++) {
+				for (let xx = 0; xx <= widthSegment; xx++) {
+					normals.push(0)
+					normals.push(0)
+					normals.push(dir)
+				}
+			}
+		}
+
+		for (let ii = 0; ii < 2; ii++) {
+			let dir = ii == 0 ? -1 : 1
+			for (let yy = 0; yy <= heightSegment; yy++) {
+				for (let xx = 0; xx <= depthSegment; xx++) {
+					normals.push(dir)
+					normals.push(0)
+					normals.push(0)
+				}
+			}
+		}
+
+		return new Float32Array(normals)
 	}
 	
 	static getIndices(widthSegment, heightSegment, depthSegment) {
