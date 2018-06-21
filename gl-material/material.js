@@ -100,14 +100,16 @@ export class Material {
 
     activate () {
         this.gl.useProgram(this.program)
+        
         this.textures.forEach((tex, i) => {
             tex.bind()
             tex.activate(i)
         })
 
         if (this.transparent) {
-            this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA)
+            this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE)
             this.gl.enable(this.gl.BLEND)
+            this.gl.disable(this.gl.DEPTH_TEST)
         }
 
         return this
@@ -116,6 +118,7 @@ export class Material {
     deactivate () {
         if (this.transparent) {
             this.gl.disable(this.gl.BLEND)
+            this.gl.enable(this.gl.DEPTH_TEST)
         }
         this.gl.useProgram(null)
         return this

@@ -29,7 +29,7 @@ export class ColorMaterial extends Material {
             uniform float u_opacity;
 
             void main () {
-                gl_FragColor = vec4(u_color, 0.1);
+                gl_FragColor = vec4(u_color, u_opacity);
             }
         `
 
