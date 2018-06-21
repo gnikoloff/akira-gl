@@ -13,12 +13,7 @@ export class ColorMaterial extends Material {
             u_color: { type: '3f', value: new Vector3(r, g, b) }
         }
 
-        if (opacity) {
-            uniforms.u_opacity = { 
-                type: '1f', 
-                value: opacity
-            }
-        }
+        if (opacity) uniforms.u_opacity = { type: '1f', value: opacity }
         
         const vertexShader = `
             attribute vec3 a_position;
