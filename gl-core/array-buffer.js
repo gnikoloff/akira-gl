@@ -39,6 +39,22 @@ export class ArrayBuffer {
         return this._array.length / this._size
     }
 
+    get normalize () {
+        return this._normalize
+    }
+
+    get stride () {
+        return this._stride
+    }
+
+    get offset () {
+        return this._offset
+    }
+
+    get mode () {
+        return this._mode
+    }
+
     init (gl, program) {
         this._gl = gl
         this._program = program

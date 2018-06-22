@@ -6,6 +6,7 @@ export { makeProgram } from './utils/make-program'
 
 export { Uniform } from './uniform'
 export { IndexArrayBuffer } from './index-array-buffer'
+export { InstancedArrayBuffer } from './instanced-array-buffer'
 export { ArrayBuffer } from './array-buffer'
 export { Framebuffer } from './frame-buffer'
 export { Texture } from './texture'
