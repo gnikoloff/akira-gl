@@ -1,6 +1,6 @@
 import { ELEMENT_ARRAY_BUFFER } from '../gl-constants'
 
-import { getWebGLExtension } from './utils/get-webgl-extension'
+import { getWebGLExtension } from './utils'
 
 export class VAO {
     constructor (gl, buffers) {

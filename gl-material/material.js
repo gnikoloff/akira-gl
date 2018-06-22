@@ -2,8 +2,7 @@ import { ELEMENT_ARRAY_BUFFER } from '../gl-constants'
 import { Uniform } from '../gl-core/uniform'
 import { Transform } from '../gl-math'
 
-import { makeShader } from '../gl-core/utils/make-shader'
-import { makeProgram } from '../gl-core/utils/make-program'
+import { makeShader, makeProgram } from '../gl-core/utils'
 
 import { shaderSharedUniformsVertexFragment } from './shader-bits/shared-uniforms'
 import { shaderPrecisionFragment } from './shader-bits/shader-precision'
@@ -57,7 +56,6 @@ export class Material {
                 this.textures.push(this.uniforms[key].value)
             }
         })
-        console.log(this.textures)
     }
 
     init (gl, buffers) {

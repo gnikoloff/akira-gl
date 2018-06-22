@@ -13,6 +13,5 @@ export const getWebGLExtension = (gl, name) => {
     webGLExtensions.push(newExt)
     
     console.log(`Enabled WebGL extension: ${name}`)
-
     return newExt.extension
 }
