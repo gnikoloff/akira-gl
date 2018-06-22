@@ -10,23 +10,14 @@ import { Geometry } from '../geometry'
  */
 
 export class PlaneGeometry extends Geometry {
-    constructor (width, height, widthSegments, heightSegments) {
+    constructor (width, height, widthSegments = 1, heightSegments = 1) {
         super()
         
         this.vertices = this.makeVertices(widthSegments, heightSegments, width, height)
         this.uvs = this.makeUvs(widthSegments, heightSegments)
         this.indices = this.makeIndices(widthSegments, heightSegments)   
-
-        this.addAttribute(
-            'a_position',
-            this.vertices,
-            2
-        )
-        this.addAttribute(
-            'a_uv',
-            this.uvs,
-            2
-        )
+        this.addAttribute('a_position', this.vertices, 2)
+        this.addAttribute('a_uv', this.uvs, 2)
         this.addIndiceAttribute(this.indices)
 
     }
@@ -80,9 +71,7 @@ export class PlaneGeometry extends Geometry {
 			}
 		}
 
-		indices = new Uint16Array(indices);
-
-		return indices;
+		return new Uint16Array(indices)
     }
 
 }
