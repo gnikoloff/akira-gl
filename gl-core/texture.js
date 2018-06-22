@@ -12,7 +12,6 @@ export class Texture {
         this._gl = gl
 
         this._texture = gl.createTexture()
-
         this.setFormat(format, internalFormat, type)
 
     }
@@ -41,7 +40,7 @@ export class Texture {
         this._gl.texImage2D(
 			this._gl.TEXTURE_2D,
 			0,
-			this._internalFormt,
+			this._internalFormat,
 			this._width,
 			this._height,
 			0,
@@ -49,6 +48,7 @@ export class Texture {
 			this._type,
 			null
         )
+        return this
     }
 
     // update texture from dataArray with Float32Array and Float64Array
