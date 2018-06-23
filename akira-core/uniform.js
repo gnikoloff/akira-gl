@@ -42,7 +42,7 @@ export class Uniform {
                 this.gl.uniform2f(this.location, ...value.getArray())
                 break
             case '3f':
-                this.gl.uniform3f(this.location, ...value.getArray())
+                this.gl.uniform3f(this.location, value.x, value.y, value.z)
                 break
             case '4f':
                 this.gl.uniform4f(this.location, ...value.getArray())
