@@ -1,5 +1,5 @@
 import { vec3 } from 'gl-matrix'
-
+import { LINE_STRIP } from '../../gl-constants'
 import { Geometry } from '../geometry'
 import { generateWireframeIndices } from '../utils'
 
@@ -11,12 +11,9 @@ export class SphereGeometry extends Geometry {
         phiStart = 0,
         phiLength = Math.PI * 2,
         thetaStart = 0,
-        thetaLength = Math.PI * 2,
-        isWire = false
+        thetaLength = Math.PI * 2
     ) {
         super()
-
-        this.isWire = isWire
 
         let {
             vertices,
@@ -33,17 +30,28 @@ export class SphereGeometry extends Geometry {
                 thetaLength
         )
 
-        if (this.isWire) {
+        this.vertices = vertices
+        this.uvs = uvs
+        this.normals = normals
+        this.indices = indices
+
+    }
+
+    init (gl, drawOperation) {
+        const { indices } = this
+        if (drawOperation === LINE_STRIP) {
             this.indices = generateWireframeIndices(indices)
         } else {
             this.indices = indices
         }
 
-        this.addAttribute('a_position', vertices, 3)
-        this.addAttribute('a_uv', uvs, 2)
-        this.addAttribute('a_normal', normals, 3)
-        this.addIndiceAttribute(indices)
-
+        this.addAttribute('a_position', this.vertices, 3)
+        this.addAttribute('a_uv', this.uvs, 2)
+        this.addAttribute('a_normal', this.normals, 3)
+        this.addIndiceAttribute(this.indices)
+        
+        super.init(gl, drawOperation)
+        return this
     }
 
     static getData (

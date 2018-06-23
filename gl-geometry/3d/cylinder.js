@@ -1,5 +1,5 @@
 import { vec3 } from 'gl-matrix'
-
+import { LINE_STRIP } from '../../gl-constants'
 import { Geometry } from '../geometry'
 import { generateWireframeIndices } from '../utils'
 
@@ -34,18 +34,28 @@ export class CylinderGeometry extends Geometry {
             indices
         } = this._getData()
 
-        if (this.isWire) {
+		this.vertices = vertices
+		this.uvs = uvs
+		this.normals = normals
+		this.indices = indices
+
+    }
+
+	init (gl, drawOperation) {
+		const { indices } = this
+		if (drawOperation === LINE_STRIP) {
             this.indices = generateWireframeIndices(indices)
         } else {
             this.indices = indices
         }
 
-        this.addAttribute('a_position', vertices, 3)
-        this.addAttribute('a_uv', uvs, 2)
-        this.addAttribute('a_normal', normals, 3)
+        this.addAttribute('a_position', this.vertices, 3)
+        this.addAttribute('a_uv', this.uvs, 2)
+        this.addAttribute('a_normal', this.normals, 3)
         this.addIndiceAttribute(this.indices)
 
-    }
+		super.init(gl, drawOperation)
+	}
 
     // private
 

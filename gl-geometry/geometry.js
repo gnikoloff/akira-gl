@@ -14,8 +14,33 @@ export class Geometry {
         this.buffers = buffers
     }
 
-    init (gl) {
+    init (gl, drawOperation) {
         this._gl = gl
+        this.drawOperation = drawOperation
+
+        this.hasIndices = this.buffers.find(attrib => {
+            if (attrib.type === ELEMENT_ARRAY_BUFFER) return true
+        })
+        if (this.hasIndices) {
+            if (this._isCopied) {
+                this.vertexCount = this._refGeometry.indices.length
+            } else {
+                this.vertexCount = this.indices.length
+            }
+        } else {
+            let vertices
+            if (this._isCopied) {
+                vertices = this._refGeometry.buffers.find(attrib => {
+                    if (attrib.name === 'a_position') return attrib
+                })
+            } else {
+                vertices = this.buffers.find(attrib => {
+                    if (attrib.name === 'a_position') return attrib
+                })
+            }
+            this.vertexCount = vertices.count
+        }
+
         return this.buffers
     }
 
@@ -50,11 +75,49 @@ export class Geometry {
         if (indices) {
             this.indices = indices._array
             this.hasIndices = true
+            
         }
         
-        this.buffers = geometry.buffers.map(buffer => buffer)
-        
+        this.buffers = geometry.buffers
+        this._isCopied = true 
+        this._refGeometry = geometry
         return this
+    }
+
+    draw () {
+        if (this.hasIndices) {
+            if (this.isInstanced) {
+                this._ext.drawElementsInstancedANGLE(
+                    this.drawOperation, 
+                    this.vertexCount, 
+                    this._gl.UNSIGNED_SHORT, 
+                    0, 
+                    this.instanceCount
+                )
+            } else {
+                this._gl.drawElements(
+                    this.drawOperation, 
+                    this.vertexCount, 
+                    this._gl.UNSIGNED_SHORT, 
+                    0
+                )
+            }
+        } else {
+            if (this.isInstanced) {
+                this._ext.drawArraysInstancedANGLE(
+                    this.drawOperation, 
+                    0, 
+                    this.vertexCount, 
+                    this.instanceCount
+                )
+            } else {
+                this._gl.drawArrays(
+                    this.drawOperation, 
+                    0, 
+                    this.vertexCount
+                ) 
+            }
+        }
     }
 
 }

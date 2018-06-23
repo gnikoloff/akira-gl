@@ -1,3 +1,4 @@
+import { LINE_STRIP } from '../../gl-constants'
 import { Geometry } from '../geometry'
 import { generateWireframeIndices } from '../utils'
 
@@ -14,14 +15,15 @@ import { generateWireframeIndices } from '../utils'
 */
 
 export class CubeGeometry extends Geometry {
-    constructor (width = 1, height = 1, depth = 1, widthSegments = 1, heightSegments = 1, depthSegments = 1, isWire = false) {
+    constructor (width = 1, height = 1, depth = 1, widthSegments = 1, heightSegments = 1, depthSegments = 1) {
         super()
 
-        this.isWire = isWire
-
-        widthSegments = Math.floor(widthSegments)
-        heightSegments = Math.floor(heightSegments)
-        depthSegments = Math.floor(depthSegments)
+		this._width = width
+		this._height = height
+		this._depth = depth
+        this._widthSegments = Math.floor(widthSegments)
+        this._heightSegments = Math.floor(heightSegments)
+        this._depthSegments = Math.floor(depthSegments)
 
 		const verticesUvs = CubeGeometry.makeVerticesUvs(
 			width,
@@ -31,36 +33,36 @@ export class CubeGeometry extends Geometry {
 			heightSegments,
 			depthSegments
 		)
-		const { vertices } = verticesUvs
-		const { uvs } = verticesUvs
-		const normals = CubeGeometry.makeNormals(widthSegments, heightSegments, depthSegments)
-
-		if (this.isWire) {
-			this.indices = generateWireframeIndices(
-				CubeGeometry.getIndices(widthSegments, heightSegments, depthSegments)
-			)
-		} else {
-			this.indices = CubeGeometry.getIndices(widthSegments, heightSegments, depthSegments)
-		}
-
-		this.addAttribute(
-			'a_position',
-			vertices,
-			3
-		)
-		this.addAttribute(
-			'a_normal',
-			normals,
-			3
-		)
-		this.addAttribute(
-			'a_uv',
-			uvs,
-			2
-		)
-		this.addIndiceAttribute(this.indices)
+		this.vertices = verticesUvs.vertices
+		this.uvs = verticesUvs.uvs
+		this.normals = CubeGeometry.makeNormals(widthSegments, heightSegments, depthSegments)
 
     }
+
+	init (gl, drawOperation) {
+		if (drawOperation === LINE_STRIP) {
+			this.indices = generateWireframeIndices(
+				this.getIndices(
+					this._widthSegments, 
+					this._heightSegments, 
+					this._depthSegments
+				)
+			)
+		} else {
+			this.indices = this.getIndices(
+				this._widthSegments, 
+				this._heightSegments, 
+				this._depthSegments
+			)
+		}
+
+		this.addAttribute('a_position', this.vertices, 3)
+		this.addAttribute('a_normal', this.normals, 3)
+		this.addAttribute('a_uv', this.uvs, 2)
+		this.addIndiceAttribute(this.indices)
+
+		super.init(gl, drawOperation)
+	}
 
 	static makeVerticesUvs (width, height, depth, widthSegment, heightSegment, depthSegment) {
 		let vertices = []
@@ -175,7 +177,7 @@ export class CubeGeometry extends Geometry {
 		return new Float32Array(normals)
 	}
 	
-	static getIndices(widthSegment, heightSegment, depthSegment) {
+	getIndices(widthSegment, heightSegment, depthSegment) {
 		let indices = []
 		let num = 0
 

@@ -10,24 +10,16 @@ export class Mesh {
         this.gl = gl
         this.geometry = geometry
         this.material = material
-        this.drawOperation = drawOperation
         
-        geometry.init(gl)
+        if (geometry._isCopied) {
+            geometry._refGeometry.init(gl, drawOperation)
+            geometry.init(gl, drawOperation)
+        } else {
+            geometry.init(gl, drawOperation)    
+        }
         material.init(gl, geometry.buffers)
         this.vao = new VAO(gl, geometry.buffers)
 
-        this.hasIndices = geometry.buffers.find(attrib => {
-            if (attrib.type === ELEMENT_ARRAY_BUFFER) return true
-        })
-
-        if (this.hasIndices) {
-            this.vertexCount = geometry.indices.length
-        } else {
-            const vertices = geometry.buffers.find(attrib => {
-                if (attrib.name === 'a_position') return attrib
-            })
-            this.vertexCount = vertices.count
-        }
     }
     
     activate () {
@@ -62,49 +54,9 @@ export class Mesh {
     }
 
     renderFrame (camera) {
-
         this.preRender(camera)
-        // console.log(this.geometry)
-        // debugger
-        if (this.hasIndices) {
-            if (this.geometry.type === 'Plane') {
-                this.gl.drawElements(this.drawOperation, this.vertexCount, this.gl.UNSIGNED_SHORT, 0)
-            } else {
-                if (this.geometry.isWire) {
-                    this.gl.drawElements(3, this.vertexCount, this.gl.UNSIGNED_SHORT, 0)
-                } else {
-
-                    if (this.geometry.isInstanced) {
-                        
-                        this.geometry._ext.drawElementsInstancedANGLE(
-                            4, 
-                            this.vertexCount, 
-                            this.gl.UNSIGNED_SHORT, 
-                            0, 
-                            this.geometry.instanceCount
-                        )
-                    } else {
-                        this.gl.drawElements(
-                            this.drawOperation, 
-                            this.vertexCount, 
-                            this.gl.UNSIGNED_SHORT, 
-                            0
-                        )
-                    }
-                }
-            }
-            
-        } else {
-            this.gl.drawArrays(this.drawOperation, 0, this.vertexCount) 
-            if (this.geometry.isInstanced) {
-                this.geometry._ext.drawArraysInstancedANGLE(this.drawOperation, 0, this.vertexCount, this.geometry.instanceCount)
-            } else {
-                this.gl.drawElements(this.drawOperation, 0, this.vertexCount, 10)
-            }
-        }   
-
+        this.geometry.draw() 
         return this
-
     }
 
 

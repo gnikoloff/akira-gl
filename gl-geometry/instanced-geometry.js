@@ -2,25 +2,24 @@ import { FLOAT } from '../gl-constants'
 
 import { Geometry } from './geometry'
 import { InstancedArrayBuffer } from '../gl-core'
-import { getWebGLExtension } from '../gl-core/utils'
+import { getWebGLExtension } from '../gl-core'
 
 export class InstancedGeometry extends Geometry {
-    constructor (instanceCount = 20, buffers = []) {
-        super()
+    constructor (instanceCount, buffers = []) {
+        super(buffers)
         this.instanceCount = instanceCount
         this.isInstanced = true
         this.buffers = buffers
     }
 
-    init (gl) {
-        super.init(gl)
+    init (gl, drawOperation) {
         this._ext = getWebGLExtension(gl, 'ANGLE_instanced_arrays')
         this.buffers.forEach(buffer => {
             if (buffer.isInstanced) {
-                this._isInstanced = true
                 buffer.addInstancingExtension(this._ext)
             }
         })
+        super.init(gl, drawOperation)
     }
 
     addInstancedAttribute (
