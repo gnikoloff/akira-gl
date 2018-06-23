@@ -1,5 +1,11 @@
 import '../vendor/oes-vertex-array-object-polyfill'
 
+/**
+ * @param {WebGLRenderingContext}
+ * @param {string} name - name of WebGL extension requested
+ * @returns - Requested WebGL extension
+ */
+
 const webGLExtensions = []
 
 export const getWebGLExtension = (gl, name) => {

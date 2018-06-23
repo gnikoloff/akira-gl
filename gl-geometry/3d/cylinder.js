@@ -3,18 +3,24 @@ import { LINE_STRIP } from '../../gl-constants'
 import { Geometry } from '../geometry'
 import { generateWireframeIndices } from '../utils'
 
+/**
+ * Cylinder geometry wrapper with vertices, uvs, normals and indices
+ * @constructor 
+ * @param {number} radiusTop
+ * @param {number} radiusBottom
+ * @param {number} height
+ * @param {number} radialSegments
+ * @param {number} heightSegments
+*/
 export class CylinderGeometry extends Geometry {
     constructor (
         radiusTop = 2,
         radiusBottom = 2,
         height = 5,
         radialSegments = 3,
-        heightSegments = 2,
-        isWire
+        heightSegments = 2
     ) {
         super()
-
-        this.isWire = isWire
 
         this._radiusTop = radiusTop
         this._radiusBottom = radiusBottom

@@ -3,6 +3,10 @@ import {
     STATIC_DRAW
 } from '../gl-constants'
 
+/**
+ * Buffer used for geometry's indices to reduce vertices redundancy.
+ */
+
 export class IndexArrayBuffer {
     constructor (array, mode = STATIC_DRAW) {
 
@@ -16,11 +20,20 @@ export class IndexArrayBuffer {
         return this._type
     }
 
+    /**
+     * Initializes buffer
+     * @param {WebGLRenderingContext} gl
+     */
+
     init (gl) {
         this._gl = gl
 
         this._buffer = gl.createBuffer()    
     }
+
+    /**
+     * Binds buffer to VAO
+     */
 
     bindToVAO () {
         this.bind()
@@ -32,14 +45,28 @@ export class IndexArrayBuffer {
         // this.unbind()
     }
 
+    /**
+     * Sets buffer data
+     */
+
     setData () {
         this._gl.bufferData(this._gl.ELEMENT_ARRAY_BUFFER, this._array, this._mode)
     }
+
+    /**
+     * Binds buffer for usage
+     * @returns {IndexArrayBuffer} `this`
+     */
 
     bind () {
         this._gl.bindBuffer(this._gl.ELEMENT_ARRAY_BUFFER, this._buffer)
         return this
     }
+
+    /**
+     * Unbinds buffer
+     * @returns {IndexArrayBuffer} `this`
+     */
 
     unbind () {
         this._gl.bindBuffer(this._gl.ELEMENT_ARRAY_BUFFER, null)

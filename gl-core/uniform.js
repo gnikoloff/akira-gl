@@ -1,3 +1,9 @@
+/**
+ * @class Uniform
+ * @param {string} name
+ * @param {number} type
+ * @param {number} value
+ */
 export class Uniform {
     
     constructor (name, type, value) {
@@ -6,10 +12,21 @@ export class Uniform {
         this.value = value
     }
     
+    /**
+     * Set location to supplied program
+     * @param {WebGLRenderingContext} gl 
+     * @param {WebGLProgram} program 
+     */
+
     setLocation (gl, program) {
         this.gl = gl
         this.location = gl.getUniformLocation(program, this.name)
     }
+
+    /**
+     * Sets uniform value
+     * @param {*} val 
+     */
 
     setValue (val) {
         let value = val ? val : this.value

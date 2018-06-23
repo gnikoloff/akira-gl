@@ -8,11 +8,23 @@ import {
 import { ArrayBuffer } from '../gl-core'
 import { IndexArrayBuffer } from '../gl-core'
 
+/**
+ * Base geometry class
+ * @class
+ * @param {Array} buffers - supply buffer and associated attribs to be bound to geometry's Vertex Array Object
+ */
 export class Geometry {
     
     constructor (buffers = []) {
         this.buffers = buffers
     }
+
+    /**
+     * Initialize geometry
+     * @param {WebGLRenderingContext} gl 
+     * @param {GLenum} drawOperation 
+     * @returns {Array} - arrays of buffers
+     */
 
     init (gl, drawOperation) {
         this._gl = gl
@@ -44,6 +56,17 @@ export class Geometry {
         return this.buffers
     }
 
+    /**
+     * Adds attribute and associated buffer with it
+     * @param {string} name - attrib name
+     * @param {Float32Array|Float64Array} array - associated array
+     * @param {number} size - size per vertex
+     * @param {GLenum} type 
+     * @param {boolean} normalize 
+     * @param {number} stride 
+     * @param {number} offset 
+     */
+
     addAttribute (
         name, 
         array, 
@@ -64,9 +87,20 @@ export class Geometry {
         ))
     }
 
+    /**
+     * Add's indice attribute for reducing vertex redundancy
+     * @param {Uint16Array|Uint32Array} array 
+     */
+
     addIndiceAttribute (array) {
         this.buffers.push(new IndexArrayBuffer(array))
     }
+
+    /**
+     * Copies geometry to a new one
+     * @param {Geometry} geometry 
+     * @returns {Geometry} `this`
+     */
 
     fromGeometry (geometry) {
         const indices = geometry.buffers.find(buffer => {
@@ -82,6 +116,10 @@ export class Geometry {
         this._refGeometry = geometry
         return this
     }
+
+    /**
+     * Draw geometry 
+     */
 
     draw () {
         if (this.hasIndices) {

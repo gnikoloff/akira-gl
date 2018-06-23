@@ -7,6 +7,15 @@ import { makeShader, makeProgram } from '../gl-core/utils'
 import { shaderSharedUniformsVertexFragment } from './shader-bits/shared-uniforms'
 import { shaderPrecisionFragment } from './shader-bits/shader-precision'
 
+/**
+ * @class
+ * @param {Object} props
+ * @param {Object} props.uniforms
+ * @param {string} props.vertexShader - vertex shader source
+ * @param {string} props.fragmentShader - fragment shader source
+ * @param {boolean} transparent
+ */
+
 export class Material {
     constructor (props) {
 
@@ -37,6 +46,15 @@ export class Material {
         `
     }   
 
+    /**
+     * Merges user's supplied uniforms with default ones that every mesh gets:
+     * u_modelMatrix
+     * u_transposeModelMatrix
+     * u_viewMatrix
+     * u_projectionMatrix
+     * @param {Object} uniforms 
+     */
+
     generateUniforms (uniforms) {
         const sharedUniforms = {
             u_modelMatrix:          new Uniform('u_modelMatrix', 'matrix4fv', this.transform.viewMatrix),
@@ -57,6 +75,12 @@ export class Material {
             }
         })
     }
+
+    /**
+     * Initialize material
+     * @param {WebGLRenderingContext} gl 
+     * @param {Array} buffers 
+     */
 
     init (gl, buffers) {
         this.gl = gl
@@ -82,6 +106,10 @@ export class Material {
         
     }
 
+    /**
+     * Update mode's matrix
+     */
+
     updateModelMatrix () {
         if (!this.transform.shouldUpdateMatrix) return
         
@@ -89,13 +117,28 @@ export class Material {
         this.transform.shouldUpdateMatrix = false
     }
 
+    /**
+     * set model's view matrix
+     * @param {Float32Array|Float64Array} matrix
+     */
+
     setViewMatrix (matrix) {
         this.uniforms.u_viewMatrix.setValue(matrix)
     }
 
+    /**
+     * set model's projection matrix
+     * @param {Float32Array|Float64Array} matrix
+     */
+
     setProjectionMatrix (matrix) {
         this.uniforms.u_projectionMatrix.setValue(matrix)
     }
+
+    /**
+     * Activate material's shader program
+     * @returns {Material} `this`
+     */
 
     activate () {
         this.gl.useProgram(this.program)
@@ -113,6 +156,11 @@ export class Material {
 
         return this
     }
+
+    /**
+     * Deactivate material's shader program
+     * @returns {Material} `this`
+     */
 
     deactivate () {
         if (this.transparent) {

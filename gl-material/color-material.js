@@ -2,6 +2,12 @@ import { Material } from './material'
 
 import { Vector3 } from '../gl-math'
 
+/**
+ * Simple single-color material
+ * @class
+ * @param {number} colorHEX
+ * @param {number} opacity
+ */
 export class ColorMaterial extends Material {
     constructor (colorHEX, opacity) {
 

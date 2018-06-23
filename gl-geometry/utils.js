@@ -1,3 +1,8 @@
+/**
+ * Generates special indices for wireframe rendering
+ * @param {Uint16Array|Uint32Array} indices 
+ * @param {boolean} isUint16Array 
+ */
 export const generateWireframeIndices = (indices, isUint16Array = true) => {
 	let wireframeIndices = []
 

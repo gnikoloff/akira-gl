@@ -6,6 +6,16 @@ import {
 
 import { Texture } from './texture'
 
+/**
+ * @class Framebuffer
+ * @param {WebGLRenderingContext} gl
+ * @param {number} [width = 256] - framebuffer's width
+ * @param {number} [height = 256] - framebuffer's height
+ * @param {GLenum} [format = RGBA] - framebuffer's format
+ * @param {GLenum} [internalFormat = RGBA] - framebuffer's internal format
+ * @param {GLenum} [type = UNSIGNED_BYTE] - framebuffer's type
+ * @param {GLenum} [filter = NEAREST] - framebuffer's filter
+ */
 export class Framebuffer {
     constructor (
         gl,
@@ -38,6 +48,11 @@ export class Framebuffer {
         this.unbind()
     }
 
+    /**
+     * Makes a new empty texture with provided width and height, binds it, sets default filtering and wrapping and unbinds it
+     * @return {Texture}
+     */
+
     makeTexture () {
         let texture = new Texture(this._gl, this._internalFormat, this._format, this._type)
         texture
@@ -50,9 +65,19 @@ export class Framebuffer {
         return texture
     }
 
+    /**
+     * @return {Texture} The associated's framebuffer texture
+     */
+
     getTexture () {
         return this._texture
     }
+
+    /**
+     * Sets framebuffer viewport
+     * @param {number} width 
+     * @param {number} height 
+     */
 
     setSize (width, height) {
         this._width = width
@@ -60,20 +85,36 @@ export class Framebuffer {
         this.texture.bind().fromSize(this._width, this._height)
     }
 
+    /**
+     * Updates framebuffer viewport
+     */
+
     updateViewport () {
         this._gl.viewport(0, 0, this._width, this._height)
         return this
     }
+
+    /**
+     * Binds framebuffer for rendering
+     */
 
     bind () {
         this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, this._framebuffer)
         return this
     }
 
+    /**
+     * Unbinds framebuffer
+     */
+
     unbind () {
         this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null)
         return this
     }
+
+    /**
+     * Deletes framebuffer
+     */
 
     delete () {
         this._texture.delete()

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "rollup -c --w --f iife"
+    "dev": "rollup -c --w --f iife",
+    "docs": "documentation build index.js -f html -o docs"
   },
   "author": "",
   "license": "ISC",

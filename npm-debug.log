@@ -1,0 +1,88 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/Users/georginikoloff/.nvm/versions/node/v0.12.18/bin/node',
+1 verbose cli   '/Users/georginikoloff/.nvm/versions/node/v0.12.18/bin/npm',
+1 verbose cli   'i',
+1 verbose cli   '-g',
+1 verbose cli   'documentationjs' ]
+2 info using npm@2.15.11
+3 info using node@v0.12.18
+4 verbose install initial load of /Users/georginikoloff/.nvm/versions/node/v0.12.18/lib/package.json
+5 verbose readDependencies loading dependencies from /Users/georginikoloff/.nvm/versions/node/v0.12.18/lib/package.json
+6 silly cache add args [ 'documentationjs', null ]
+7 verbose cache add spec documentationjs
+8 silly cache add parsed spec { raw: 'documentationjs',
+8 silly cache add   scope: null,
+8 silly cache add   name: 'documentationjs',
+8 silly cache add   rawSpec: '',
+8 silly cache add   spec: 'latest',
+8 silly cache add   type: 'tag' }
+9 silly addNamed documentationjs@latest
+10 verbose addNamed "latest" is being treated as a dist-tag for documentationjs
+11 info addNameTag [ 'documentationjs', 'latest' ]
+12 silly mapToRegistry name documentationjs
+13 silly mapToRegistry using default registry
+14 silly mapToRegistry registry https://registry.npmjs.org/
+15 silly mapToRegistry data { raw: 'documentationjs',
+15 silly mapToRegistry   scope: null,
+15 silly mapToRegistry   name: 'documentationjs',
+15 silly mapToRegistry   rawSpec: '',
+15 silly mapToRegistry   spec: 'latest',
+15 silly mapToRegistry   type: 'tag' }
+16 silly mapToRegistry uri https://registry.npmjs.org/documentationjs
+17 verbose addNameTag registry:https://registry.npmjs.org/documentationjs not in flight; fetching
+18 verbose request uri https://registry.npmjs.org/documentationjs
+19 verbose request no auth needed
+20 info attempt registry request try #1 at 4:45:56 PM
+21 verbose request id 7e152cee445c672e
+22 http request GET https://registry.npmjs.org/documentationjs
+23 http 404 https://registry.npmjs.org/documentationjs
+24 verbose headers { date: 'Sat, 23 Jun 2018 14:46:00 GMT',
+24 verbose headers   'content-type': 'application/json',
+24 verbose headers   'content-length': '21',
+24 verbose headers   connection: 'keep-alive',
+24 verbose headers   'set-cookie': [ '__cfduid=d27ef151a1acf238240bdf6fe2facdadf1529765159; expires=Sun, 23-Jun-19 14:45:59 GMT; path=/; domain=.registry.npmjs.org; HttpOnly' ],
+24 verbose headers   'cache-control': 'max-age=300',
+24 verbose headers   'cf-cache-status': 'MISS',
+24 verbose headers   'cf-ray': '42f7bdd7df6e6481-FRA',
+24 verbose headers   'expect-ct': 'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+24 verbose headers   vary: 'accept-encoding, accept',
+24 verbose headers   server: 'cloudflare' }
+25 silly get cb [ 404,
+25 silly get   { date: 'Sat, 23 Jun 2018 14:46:00 GMT',
+25 silly get     'content-type': 'application/json',
+25 silly get     'content-length': '21',
+25 silly get     connection: 'keep-alive',
+25 silly get     'set-cookie': [ '__cfduid=d27ef151a1acf238240bdf6fe2facdadf1529765159; expires=Sun, 23-Jun-19 14:45:59 GMT; path=/; domain=.registry.npmjs.org; HttpOnly' ],
+25 silly get     'cache-control': 'max-age=300',
+25 silly get     'cf-cache-status': 'MISS',
+25 silly get     'cf-ray': '42f7bdd7df6e6481-FRA',
+25 silly get     'expect-ct': 'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+25 silly get     vary: 'accept-encoding, accept',
+25 silly get     server: 'cloudflare' } ]
+26 verbose stack Error: Not found : documentationjs
+26 verbose stack     at makeError (/Users/georginikoloff/.nvm/versions/node/v0.12.18/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:302:12)
+26 verbose stack     at CachingRegistryClient.<anonymous> (/Users/georginikoloff/.nvm/versions/node/v0.12.18/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:290:14)
+26 verbose stack     at Request._callback (/Users/georginikoloff/.nvm/versions/node/v0.12.18/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:210:14)
+26 verbose stack     at Request.self.callback (/Users/georginikoloff/.nvm/versions/node/v0.12.18/lib/node_modules/npm/node_modules/request/request.js:187:22)
+26 verbose stack     at Request.emit (events.js:110:17)
+26 verbose stack     at Request.<anonymous> (/Users/georginikoloff/.nvm/versions/node/v0.12.18/lib/node_modules/npm/node_modules/request/request.js:1044:10)
+26 verbose stack     at Request.emit (events.js:107:17)
+26 verbose stack     at IncomingMessage.<anonymous> (/Users/georginikoloff/.nvm/versions/node/v0.12.18/lib/node_modules/npm/node_modules/request/request.js:965:12)
+26 verbose stack     at IncomingMessage.emit (events.js:129:20)
+26 verbose stack     at _stream_readable.js:908:16
+27 verbose statusCode 404
+28 verbose pkgid documentationjs
+29 verbose cwd /Applications/MAMP/htdocs/gl-lib
+30 error Darwin 16.7.0
+31 error argv "/Users/georginikoloff/.nvm/versions/node/v0.12.18/bin/node" "/Users/georginikoloff/.nvm/versions/node/v0.12.18/bin/npm" "i" "-g" "documentationjs"
+32 error node v0.12.18
+33 error npm  v2.15.11
+34 error code E404
+35 error 404 Not found : documentationjs
+35 error 404
+35 error 404 'documentationjs' is not in the npm registry.
+35 error 404 You should bug the author to publish it (or use the name yourself!)
+35 error 404
+35 error 404 Note that you can also install from a
+35 error 404 tarball, folder, http url, or git url.
+36 verbose exit [ 1, true ]

@@ -3,6 +3,17 @@ import { LINE_STRIP } from '../../gl-constants'
 import { Geometry } from '../geometry'
 import { generateWireframeIndices } from '../utils'
 
+/**
+ * Sphere geometry wrapper with vertices, uvs, normals and indices
+ * @constructor 
+ * @param {number} radius
+ * @param {number} widthSegments
+ * @param {number} heightSegments
+ * @param {number} phiStart
+ * @param {number} phiLength
+ * @param {number} thetaStart
+ * @param {number} thetaLength
+*/
 export class SphereGeometry extends Geometry {
     constructor (
         radius = 2,

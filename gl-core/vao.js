@@ -1,7 +1,12 @@
 import { ELEMENT_ARRAY_BUFFER } from '../gl-constants'
-
 import { getWebGLExtension } from './utils'
 
+/**
+ * Generates Vertex Array Object to hold single geometry's buffers
+ * @class
+ * @param {WebGLRenderingContext} gl
+ * @param {Array} buffers
+ */
 export class VAO {
     constructor (gl, buffers) {
         
@@ -18,16 +23,28 @@ export class VAO {
         
     }
 
-    delete () {
-        this.vaoExtension.deleteVertexArrayOES(this.vao)
-    }
+    /**
+     * Bind vao
+     */
 
     bind () {
         this.vaoExtension.bindVertexArrayOES(this.vao)
     }
 
+    /**
+     * Unbind vao
+     */
+
     unbind () {
         this.vaoExtension.bindVertexArrayOES(null)
+    }
+
+    /**
+     * Delete vao
+     */
+
+    delete () {
+        this.vaoExtension.deleteVertexArrayOES(this.vao)
     }
 
 }

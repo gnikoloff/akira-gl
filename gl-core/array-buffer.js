@@ -4,6 +4,17 @@ import {
     ARRAY_BUFFER 
 } from '../gl-constants'
 
+/**
+ * Used to associate attribute and it's buffer
+ * @class 
+ * @param {string} name - attrib name
+ * @param {Float32Array|Float64Array} array - associated buffer's array
+ * @param {number} [size = 2] - size per vertex
+ * @param {GLEnum} [type = FLOAT] - type of data
+ * @param {boolean} [normalize = false] - should normalize buffer
+ * @param {number} [stride = 0] - attrib's stride
+ * @param {number} [offset = 0] - attrib's offset
+ */
 export class ArrayBuffer {
     constructor (name, array, size = 2, type = FLOAT, normalize = false, stride = 0, offset = 0, mode = STATIC_DRAW) {
 
@@ -55,6 +66,12 @@ export class ArrayBuffer {
         return this._mode
     }
 
+    /**
+     * Initializes attribute and associated buffer
+     * @param {WebGLRenderingContext} gl 
+     * @param {WebGLProgram} program - program needed to look up buffer's location on GPU
+     */
+
     init (gl, program) {
         this._gl = gl
         this._program = program
@@ -69,9 +86,17 @@ export class ArrayBuffer {
         this.unbind()
     }
 
+    /**
+     * Set buffer's data
+     */
+
     setData () {
         this._gl.bufferData(this._gl.ARRAY_BUFFER, this._array, this._mode)
     }
+
+    /**
+     * Bind to Vertex Array Objext
+     */
 
     bindToVAO () {
         if (this._location === -1) return
@@ -89,16 +114,30 @@ export class ArrayBuffer {
         this.unbind()
     }
 
+    /**
+     * Update buffer's contents
+     */
+
     update () {
         this.bind()
         this.setData()
         this.unbind()
     }
 
+    /**
+     * Bind buffer to gl.ARRAY_BUFFER
+     * @returns {ArrayBuffer} `this`
+     */
+
     bind () {
         this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._buffer)
         return this
     }
+
+    /**
+     * Unbind buffer
+     * @returns {ArrayBuffer} `this`
+     */
 
     unbind () {
         this._gl.bindBuffer(this._gl.ARRAY_BUFFER, null)

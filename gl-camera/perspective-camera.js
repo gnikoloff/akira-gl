@@ -1,7 +1,14 @@
 import { mat4 } from 'gl-matrix'
-
 import { Euler, Vector3 } from '../gl-math'
 
+/**
+ * @class Perspspective Camera class
+ * @param {number} [width = window.innerWidth] - viewport's width
+ * @param {number} [height = window.innerWidth] - viewport's height
+ * @param {number} [fov = 45] - camera's field of view
+ * @param {number} [near = 1] - camera's near visibility
+ * @param {number} [far = 1000] - camera's far visibility
+ */
 export class PerspectiveCamera {
 	constructor(
 		width = window.innerWidth, 
@@ -52,12 +59,22 @@ export class PerspectiveCamera {
 		return this._far
 	}
 
+	/**
+	 * Update camera's view matrix
+	 * @param {boolean} [forceUpdate = false] - should update
+	 */
 	update (forceUpdate = false) {
 		this._updateViewMatrix(forceUpdate)
 
 		return this
 	}
 
+	/**
+	 * Set camera's position in world
+	 * @param {number} x - camera x position
+	 * @param {number} y - camera y position
+	 * @param {number} z - camera z position
+	 */
 	setPosition (x, y, z) {
 		this.updatePosition(x, y, z)
 	}
@@ -70,6 +87,12 @@ export class PerspectiveCamera {
 		return this
 	}
 
+	/**
+	 * Set camera's rotation
+	 * @param {number} x - camera x rotation
+	 * @param {number} y - camera y rotation
+	 * @param {number} z - camera z rotation
+	 */
 	setRotation (x, y, z) {
 		this.updateRotation(x, y, z)
 	}
@@ -83,8 +106,8 @@ export class PerspectiveCamera {
 	}
 
 	/**
-	 *
-	 * @param {Array}targetPosition
+	 * Orient camera to look at supplied array's x y z positions
+	 * @param {Array} targetPosition
 	 */
 	lookAt (targetPosition) {
 		if (Array.isArray(targetPosition)) mat4.lookAt(this.viewMatrix, this.position.array, targetPosition, [0, 1, 0])
@@ -106,6 +129,12 @@ export class PerspectiveCamera {
 		)
 	}
 
+	/**
+	 * Update camera's viewport size
+	 * @param {number} width 
+	 * @param {number} height 
+	 */
+
 	updateSize (width, height) {
 		this._width = width
 		this._height = height
@@ -113,11 +142,23 @@ export class PerspectiveCamera {
 		this._updateProjectionMatrix()
 	}
 
+	/**
+	 * Update camera's field of view
+	 * @param {number} fov - field of view
+	 * @param {boolean} [updateProjectionMatrix = true] - should update projection matrix
+	 */
+
 	updateFov (fov, updateProjectionMatrix = true) {
 		this._fov = fov
 
 		if (updateProjectionMatrix) this._updateProjectionMatrix()
 	}
+
+	/**
+	 * Update camera's near and far visibility
+	 * @param {number} near 
+	 * @param {number} far 
+	 */
 
 	updateDistance (near, far) {
 		if (near) this._near = near
@@ -126,14 +167,26 @@ export class PerspectiveCamera {
 		this._updateProjectionMatrix()
 	}
 
+	/**
+	 * Update camera's projection and view matrices
+	 */
+
 	updateMatrix () {
 		this.updateProjectionMatrix()
 		this.updateViewMatrix()
 	}
 
+	/**
+	 * Update camera's projection matrix
+	 */
+
 	updateProjectionMatrix () {
 		this._updateProjectionMatrix()
 	}
+
+	/**
+	 * Update camera's view matrix
+	 */
 
 	updateViewMatrix () {
 		this._updateViewMatrix()
