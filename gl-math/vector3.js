@@ -1,60 +1,62 @@
-import { vec3 } from 'gl-matrix'
+import { mat4 } from 'gl-matrix';
 
 export class Vector3 {
-    constructor (x = 0, y = 0, z = 0) {
+	constructor (x = 0, y = 0, z = 0) {
+		this.needsUpdate = true
+		this._x = x
+		this._y = y
+		this._z = z
+
+		this.array = new Float32Array([x, y, z])
+		this.matrix = mat4.create()
+	}
+    set (x, y, z) {
         this._x = x
         this._y = y
         this._z = z
-
-        this._vector = vec3.create()
-
-        vec3.set(this._vector, x, y, z)   
     }
+	set x (value) {
+		this.needsUpdate = true
+		this._x = value
+		this.array[0] = value
 
-    get vector () {
-        return this._vector
-    }
+		this.update()
+	}
+	get x () {
+		return this._x
+	}
+	set y (value) {
+		this.needsUpdate = true
+		this._y = value
+		this.array[1] = value
 
-    set (x = 0, y = 0, z = 0) {
-        this._x = x
-        this._y = y
-        this._z = z
+		this.update()
+	}
+	get y () {
+		return this._y
+	}
+	set z (value) {
+		this.needsUpdate = true
+		this._z = value
+		this.array[2] = value
 
-        vec3.set(this._vector, x, y, z)
-    }
+		this.update()
+	}
+	get z () {
+		return this._z
+	}
+	update () {
+		mat4.fromTranslation(this.matrix, this.array)
+	}
+	setArray (arr) {
+		this._x = arr[0]
+		this._y = arr[1]
+		this._z = arr[2]
 
-    get x () {
-        return this._x
-    }
+		this.array[0] = arr[0]
+		this.array[1] = arr[1]
+		this.array[2] = arr[2]
 
-    set x (x) {
-        this._x = x
-    }
-
-    get y () {
-        return this._y
-    }
-
-    set y (y) {
-        this._y = y
-    }
-
-    get z () {
-        return this._z
-    }
-
-    set z (z) {
-        this._z = z
-    }
-
-    getArray () {
-        return [ this._x, this._y, this._z ]
-    }
-
-    clone () {
-        const newVector = vec3.create()
-        vec3.set(newVector, this._x, this._y, this._z)
-        return newVector
-    }
-
+		this.update()
+	}
 }
