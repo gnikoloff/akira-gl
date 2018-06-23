@@ -31,11 +31,11 @@ export class Geometry {
             let vertices
             if (this._isCopied) {
                 vertices = this._refGeometry.buffers.find(attrib => {
-                    if (attrib.name === 'a_position') return attrib
+                    return attrib.name === 'a_position'
                 })
             } else {
                 vertices = this.buffers.find(attrib => {
-                    if (attrib.name === 'a_position') return attrib
+                    return attrib.name === 'a_position'
                 })
             }
             this.vertexCount = vertices.count
@@ -75,7 +75,6 @@ export class Geometry {
         if (indices) {
             this.indices = indices._array
             this.hasIndices = true
-            
         }
         
         this.buffers = geometry.buffers
