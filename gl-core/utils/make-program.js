@@ -30,5 +30,8 @@ export const makeProgram = (gl, vertexShader, fragmentShader, doValidate = false
         }
     }
 
+    gl.deleteShader(vertexShader)
+    gl.deleteShader(fragmentShader)
+
     return program
 }
