@@ -21,5 +21,14 @@ export const makeProgram = (gl, vertexShader, fragmentShader, doValidate = false
         return
     }
 
+    if (doValidate) {
+        gl.validateProgram(program)
+        if (!gl.getProgramParameter(program, gl.VALIDATE_STATUS)) {
+            console.error(`Error validating program ${gl.getProgramInfoLog(program)}`)
+            gl.deleteProgram(program)
+            return
+        }
+    }
+
     return program
 }
