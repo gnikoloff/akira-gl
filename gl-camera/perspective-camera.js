@@ -6,7 +6,7 @@ export class PerspectiveCamera {
 	constructor(
 		width = window.innerWidth, 
 		height = window.innerHeight, 
-		fov = 60, 
+		fov = 45, 
 		near = 1, 
 		far = 1000
 	) {

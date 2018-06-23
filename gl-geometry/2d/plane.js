@@ -29,13 +29,14 @@ export class PlaneGeometry extends Geometry {
 
         for (let y = 0; y <= heightSegments; y += 1) {
             let posy = (-0.5 + ratey * y) * height
-
+            let uvy = 1.0 - ratey * y
             for (let x = 0; x <= widthSegments; x += 1) {
                 let posx = (-0.5 + ratex * x) * width
-
-                verticesArr.push(posx, posy)
+                let uvx = 1.0 - ratex * x
+                verticesArr.push(posx, posy, '----', uvx, uvy)
             }
         }
+        console.log(verticesArr)
         return new Float32Array(verticesArr)
     }
 

@@ -1,110 +1,88 @@
+import Stats from 'stats-js'
+
 import { PerspectiveCamera, CameraController } from './gl-camera'
-import { Mesh, Texture } from './gl-core'
-import { SphereGeometry, CubeGeometry, CylinderGeometry } from './gl-geometry'
-import { Material } from './gl-material'
+import { Mesh, Framebuffer, Texture } from './gl-core'
+import { Geometry, PlaneGeometry, InstancedGeometry, CubeGeometry, SphereGeometry, CylinderGeometry } from './gl-geometry'
+import { Material, ColorMaterial } from './gl-material'
 
 const $canvas = document.createElement('canvas')
 const gl = $canvas.getContext('webgl') || $canvas.getContext('experimental-webgl')
 
+const dpr = window.devicePixelRatio || 1
 let w = window.innerWidth
 let h = window.innerHeight
+let wdpr = w * dpr
+let hdpr = h * dpr
 let elapsedTime = 0
 
-$canvas.width  = w
-$canvas.height = h
+$canvas.width  = wdpr
+$canvas.height = hdpr
+$canvas.style.width = `${w}px`
+$canvas.style.height = `${h}px`
 document.body.appendChild($canvas)
 
+const stats = new Stats()
+
+stats.domElement.style.position = 'fixed'
+stats.domElement.style.left = stats.domElement.style.top = '1rem'
+document.body.appendChild(stats.domElement)
+
 const camera = new PerspectiveCamera(w, h)
-const cameraOriginalPos = [ 0, 3, 25 ]
-const cameraLookAt = [ 0, 0, 0 ]
+camera.setPosition(0, 0, 50)
+const ctrls = new CameraController(camera)
 
-const a = document.createElement('canvas')
-const ctx = a.getContext('2d')
+const a = new PlaneGeometry(5, 5, 3, 3)
 
-a.width = 512
-a.height = 512
-document.body.appendChild(a)
+const count = 100
+const refgeo = new CubeGeometry()
+const geo = new InstancedGeometry(count).fromGeometry(refgeo)
 
-ctx.fillStyle = '#fff'
-ctx.fillRect(0, 0, a.width, a.height)
-ctx.fillStyle = 'red'
-ctx.strokeStyle = 'green'
-ctx.lineWidth = 20
-ctx.beginPath()
-ctx.arc(a.width / 2, a.height / 2, 100, 0, Math.PI * 2, true)
-ctx.closePath()
-ctx.fill()
-ctx.stroke()
+const offsets = new Float32Array(count * 3)
 
-const tex = new Texture(gl)
-tex
-    .bind()
-    .setFilter()
-    .wrap()
-    .fromImage(a)
+for (let i = 0; i < count; i += 1) {
+    offsets[i * 3 + 0] = (Math.random() * 2 - 1) * 100
+    offsets[i * 3 + 1] = (Math.random() * 2 - 1) * 100
+    offsets[i * 3 + 2] = (Math.random() * 2 - 1) * 100
+}
 
+geo.addInstancedAttribute('a_offsetPos', offsets, 3)
 
-const geo = new CylinderGeometry(2, 2, 5, 10)
-// geo.isWire = true
 const mat = new Material({
-    uniforms: {
-        u_sampler: { type: 't', value: tex }
-    },
+    uniforms: {},
     vertexShader: `
         attribute vec3 a_position;
-        attribute vec3 a_normal;
-        attribute vec2 a_uv;
-
-        varying vec2 v_uv;
-        varying vec3 v_normal;
+        attribute vec3 a_offsetPos;
 
         void main () {
-
-            vec3 n = a_normal * 2.0 + a_position;
-            gl_Position = u_projectionMatrix * u_viewMatrix * u_modelMatrix * vec4(a_position, 1.0);
+            gl_Position = 
+                u_projectionMatrix *
+                u_viewMatrix *
+                u_modelMatrix *
+                vec4(a_position + a_offsetPos, 1.0);
             
-            v_uv = a_uv;
-            v_normal = mat3(u_transposeModelMatrix) * a_normal;
+            gl_PointSize = 10.0;
+
         }
     `,
     fragmentShader: `
-        uniform sampler2D u_sampler;
-
-        varying vec2 v_uv;
-        varying vec3 v_normal;
-
-        const vec3 lightPosition = vec3(-0.5, 0.5, 0.6);
-
         void main () {
-            vec3 normal = normalize(v_normal);
-            float light = dot(normal, lightPosition);
-            gl_FragColor = texture2D(u_sampler, v_uv);
-            gl_FragColor.rgb *= light;
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
         }
     `
 })
-const mesh = new Mesh(gl, geo, mat)
-mesh.setScale(1, 1, 1)
-mesh.material.transform.updateMatrix()
-
-$canvas.addEventListener('mousemove', e => {
-    const mousex = (e.pageX - window.innerWidth / 2) / window.innerWidth
-    const mousey = (e.pageY - window.innerHeight / 2) / window.innerHeight
-
-    const camerax = cameraOriginalPos[0] + mousex * 20
-    const cameray = cameraOriginalPos[1] + mousey * 20
-    
-    camera.setPosition(camerax, cameray, cameraOriginalPos[2])
-    camera.lookAt(cameraLookAt)
-    camera.update()
-}, false)
+const mesh = new Mesh(gl, geo, mat, gl.LINE_LOOP)
 
 window.onresize = () => {
     w = window.innerWidth
     h = window.innerHeight
+    wdpr = w * dpr
+    hdpr = h * dpr
 
-    $canvas.width = w
-    $canvas.height = w
+    $canvas.width = wdpr
+    $canvas.height = hdpr
+    $canvas.style.width = `${w}px`
+    $canvas.style.height = `${h}px`
+
 }
 
 window.requestAnimationFrame(renderFrame)
@@ -112,21 +90,21 @@ window.requestAnimationFrame(renderFrame)
 function renderFrame () {
     window.requestAnimationFrame(renderFrame)
 
+    stats.begin()
+
     let time = window.performance.now() / 1000
     let delta = time - elapsedTime
     elapsedTime = time
 
-    gl.viewport(0, 0, w, h)
-    gl.clearColor(0.2, 0.2, 0.2, 1.0)
+    gl.viewport(0, 0, wdpr, hdpr)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-    
     gl.enable(gl.DEPTH_TEST)
     // gl.enable(gl.CULL_FACE)
 
-    mesh
-        .activate()
-        .renderFrame(camera)
-        .deactivate()
-    
+    mesh.activate()
+    mesh.renderFrame(camera)
+    mesh.deactivate()
+
+    stats.end()
 
 }
