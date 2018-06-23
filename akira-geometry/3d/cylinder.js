@@ -34,15 +34,11 @@ export class CylinderGeometry extends Geometry {
         }
 
         const {
-            vertices,
-            uvs,
-            normals,
+            verticesUvsNormals,
             indices
         } = this._getData()
 
-		this.vertices = vertices
-		this.uvs = uvs
-		this.normals = normals
+		this.verticesUvsNormals = verticesUvsNormals
 		this.indices = indices
 
     }
@@ -55,9 +51,11 @@ export class CylinderGeometry extends Geometry {
             this.indices = indices
         }
 
-        this.addAttribute('a_position', this.vertices, 3)
-        this.addAttribute('a_uv', this.uvs, 2)
-        this.addAttribute('a_normal', this.normals, 3)
+        this.addInterleavedAttribute(this.verticesUvsNormals, [
+			{ name: 'a_position', size: 3 },
+			{ name: 'a_uv', size: 2 },
+			{ name: 'a_normal', size: 3 }
+		])
         this.addIndiceAttribute(this.indices)
 
 		super.init(gl, drawOperation)
@@ -66,26 +64,22 @@ export class CylinderGeometry extends Geometry {
     // private
 
     _getData () {
-        let vertices = []
-        let uvs = []
-        let normals = []
+		let verticesUvsNormals = []
         let indices = []
         let index = 0
 
-        index = this._generateTorso(vertices, uvs, normals, indices, index)
-        index = this._generateCap(true, vertices, uvs, normals, indices, index)
-        index = this._generateCap(false, vertices, uvs, normals, indices, index)
+        index = this._generateTorso(verticesUvsNormals, indices, index)
+        index = this._generateCap(true,  verticesUvsNormals, indices, index)
+        index = this._generateCap(false, verticesUvsNormals, indices, index)
 
         return {
-            vertices: new Float32Array(vertices),
-            uvs: new Float32Array(uvs),
-            normals: new Float32Array(normals),
+            verticesUvsNormals: new Float32Array(verticesUvsNormals),
             indices: new Uint16Array(indices)
         }
 
     }
 
-    _generateTorso (vertices, uvs, normals, indices, index) {
+    _generateTorso (verticesUvsNormals, indices, index) {
         let slope = (this._radiusBottom - this._radiusBottom) / this._height
 		let indexArray = []
 
@@ -104,10 +98,15 @@ export class CylinderGeometry extends Geometry {
 				let sinTheta = Math.sin(theta)
 				let cosTheta = Math.cos(theta)
 
-				vertices.push(radius * sinTheta, (-v + 0.5) * this._height, radius * cosTheta)
 				vec3.normalize(normal, [sinTheta, slope, cosTheta])
-				normals.push(normal[0], normal[1], normal[2])
-				uvs.push(u, 1 - v)
+				verticesUvsNormals.push(
+					// pos
+					radius * sinTheta, (-v + 0.5) * this._height, radius * cosTheta,
+					// uv
+					u, 1 - v,
+					// normal
+					normal[0], normal[1], normal[2]
+				)
 
 				indexRow.push(index++)
 			}
@@ -132,7 +131,7 @@ export class CylinderGeometry extends Geometry {
 		return index
     }
 
-    _generateCap (isTop = true, vertices, uvs, normals, indices, index) {
+    _generateCap (isTop = true, verticesUvsNormals, indices, index) {
         let centerIndexStart
         let centerIndexEnd
 
@@ -142,9 +141,16 @@ export class CylinderGeometry extends Geometry {
 		centerIndexStart = index
 
 		for (let x = 1; x <= this._radialSegments; x += 1) {
-			vertices.push(0, this._height / 2 * sign, 0)
-			normals.push(0, sign, 0)
-			uvs.push(0.5, 0.5)
+
+			verticesUvsNormals.push(
+				// pos
+				0, this._height / 2 * sign, 0,
+				// uv
+				0.5, 0.5,
+				// normal
+				0, sign, 0
+			)
+
 			index++
 		}
 
@@ -157,11 +163,15 @@ export class CylinderGeometry extends Geometry {
 			let cosTheta = Math.cos(theta)
 			let sinTheta = Math.sin(theta)
 
-			vertices.push(radius * sinTheta, sign * this._height / 2, radius * cosTheta)
+			verticesUvsNormals.push(
+				// pos
+				radius * sinTheta, sign * this._height / 2, radius * cosTheta,
+				// uvs
+				cosTheta * 0.5 + 0.5, sinTheta * 0.5 * sign + 0.5,
+				// normal
+				0, sign, 0
+			)
 
-			normals.push(0, sign, 0)
-
-			uvs.push(cosTheta * 0.5 + 0.5, sinTheta * 0.5 * sign + 0.5)
 			index++
 		}
 
@@ -171,11 +181,9 @@ export class CylinderGeometry extends Geometry {
 
 			if (top === true) {
 				// face top
-
 				indices.push(i, i + 1, c)
 			} else {
 				// face bottom
-
 				indices.push(i + 1, i, c)
 			}
 		}

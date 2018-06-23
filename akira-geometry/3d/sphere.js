@@ -27,9 +27,7 @@ export class SphereGeometry extends Geometry {
         super()
 
         let {
-            vertices,
-            uvs,
-            normals,
+            verticesUvsNormals,
             indices
         } = SphereGeometry.getData(
                 radius, 
@@ -41,9 +39,7 @@ export class SphereGeometry extends Geometry {
                 thetaLength
         )
 
-        this.vertices = vertices
-        this.uvs = uvs
-        this.normals = normals
+        this.verticesUvsNormals = verticesUvsNormals
         this.indices = indices
 
     }
@@ -55,10 +51,12 @@ export class SphereGeometry extends Geometry {
         } else {
             this.indices = indices
         }
-
-        this.addAttribute('a_position', this.vertices, 3)
-        this.addAttribute('a_uv', this.uvs, 2)
-        this.addAttribute('a_normal', this.normals, 3)
+        
+        this.addInterleavedAttribute(this.verticesUvsNormals, [
+            { name: 'a_position', size: 3 },
+            { name: 'a_uv', size: 2 },
+            { name: 'a_normal', size: 3 }
+        ])
         this.addIndiceAttribute(this.indices)
         
         super.init(gl, drawOperation)
@@ -77,9 +75,7 @@ export class SphereGeometry extends Geometry {
 
         let grid = []
 		let indices = []
-		let vertices = []
-		let normals = []
-		let uvs = []
+		let verticesUvsNormals = []
 		let index = 0
 		let normalVec3 = vec3.create()
 
@@ -99,12 +95,16 @@ export class SphereGeometry extends Geometry {
 					radius * Math.sin(phi) * Math.sin(theta)
 				]
 
-				vertices.push(vertex[0], vertex[1], vertex[2])
-
 				vec3.normalize(normalVec3, vertex)
-				normals.push(normalVec3[0], normalVec3[1], normalVec3[2])
 
-				uvs.push(u, 1 - v)
+                verticesUvsNormals.push(
+                    // pos
+                    vertex[0], vertex[1], vertex[2],
+                    // uv
+                    u, 1 - v,
+                    // normal
+                    normalVec3[0], normalVec3[1], normalVec3[2]
+                )
 
 				verticeRow.push(index++)
 			}
@@ -127,9 +127,7 @@ export class SphereGeometry extends Geometry {
 		}
 
 		return { 
-            vertices: new Float32Array(vertices), 
-            uvs: new Float32Array(uvs), 
-            normals: new Float32Array(normals), 
+            verticesUvsNormals: new Float32Array(verticesUvsNormals),
             indices: new Uint16Array(indices)
         }
 

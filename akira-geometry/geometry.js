@@ -6,6 +6,7 @@ import {
 } from '../akira-constants'
 
 import { ArrayBuffer } from '../akira-core'
+import { InterleavedArrayBuffer } from '../akira-core'
 import { IndexArrayBuffer } from '../akira-core'
 
 /**
@@ -76,7 +77,7 @@ export class Geometry {
         stride = 0,
         offset = 0
     ) {
-        this.buffers.push(new ArrayBuffer(
+    this.buffers.push(new ArrayBuffer(
             name,
             array,
             size,
@@ -85,6 +86,11 @@ export class Geometry {
             stride,
             offset
         ))
+    }
+
+    addInterleavedAttribute (array, buffersInfo) {
+        console.log(buffersInfo)
+        this.buffers.push(new InterleavedArrayBuffer(array, buffersInfo))
     }
 
     /**

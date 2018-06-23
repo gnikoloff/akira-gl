@@ -1,4 +1,5 @@
 import { Geometry } from '../geometry'
+import { FLOAT } from '../../akira-constants'
 
 /**
  * Plane geometry wrapper with vertices, uvs and indices
@@ -13,11 +14,27 @@ export class PlaneGeometry extends Geometry {
     constructor (width, height, widthSegments = 1, heightSegments = 1) {
         super()
         
-        this.vertices = this.makeVertices(widthSegments, heightSegments, width, height)
-        this.uvs = this.makeUvs(widthSegments, heightSegments)
+        // this.vertices = this.makeVertices(widthSegments, heightSegments, width, height)
+        // this.uvs = this.makeUvs(widthSegments, heightSegments)
         this.indices = this.makeIndices(widthSegments, heightSegments)   
-        this.addAttribute('a_position', this.vertices, 2)
-        this.addAttribute('a_uv', this.uvs, 2)
+        // this.addAttribute('a_position', this.vertices, 2)
+        // this.addAttribute('a_uv', this.uvs, 2)
+
+        const verticesUvs = this.makeVertices(widthSegments, heightSegments, width, height)
+        this.addInterleavedAttribute(verticesUvs, [
+            {
+                name: 'a_position',
+                size: 2,
+                type: FLOAT,
+                normalize: false
+            },
+            {
+                name: 'a_uv',
+                size: 2,
+                type: FLOAT,
+                normalize: false
+            }
+        ])
         this.addIndiceAttribute(this.indices)
 
     }
@@ -33,10 +50,9 @@ export class PlaneGeometry extends Geometry {
             for (let x = 0; x <= widthSegments; x += 1) {
                 let posx = (-0.5 + ratex * x) * width
                 let uvx = 1.0 - ratex * x
-                verticesArr.push(posx, posy, '----', uvx, uvy)
+                verticesArr.push(posx, posy, uvx, uvy)
             }
         }
-        console.log(verticesArr)
         return new Float32Array(verticesArr)
     }
 

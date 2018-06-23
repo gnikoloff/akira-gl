@@ -23,7 +23,7 @@ export class CubeGeometry extends Geometry {
         this._heightSegments = Math.floor(heightSegments)
         this._depthSegments = Math.floor(depthSegments)
 
-		const verticesUvs = CubeGeometry.makeVerticesUvs(
+		const verticesUvsNormals = CubeGeometry.makeVerticesUvs(
 			width,
 			height,
 			depth,
@@ -31,9 +31,8 @@ export class CubeGeometry extends Geometry {
 			heightSegments,
 			depthSegments
 		)
-		this.vertices = verticesUvs.vertices
-		this.uvs = verticesUvs.uvs
-		this.normals = CubeGeometry.makeNormals(widthSegments, heightSegments, depthSegments)
+		this.verticesUvsNormals = verticesUvsNormals
+		// this.normals = CubeGeometry.makeNormals(widthSegments, heightSegments, depthSegments)
 
     }
 
@@ -53,17 +52,18 @@ export class CubeGeometry extends Geometry {
 				this._depthSegments
 			)
 		}
-
-		this.addAttribute('a_position', this.vertices, 3)
-		this.addAttribute('a_normal', this.normals, 3)
-		this.addAttribute('a_uv', this.uvs, 2)
+		this.addInterleavedAttribute(this.verticesUvsNormals, [
+			{ name: 'a_position', size: 3 },
+			{ name: 'a_uv', size: 2 },
+			{ name: 'a_normal', size: 3 }
+		])
 		this.addIndiceAttribute(this.indices)
 
 		super.init(gl, drawOperation)
 	}
 
 	static makeVerticesUvs (width, height, depth, widthSegment, heightSegment, depthSegment) {
-		let vertices = []
+		let verticesUvsNormals = []
 		let uvs = []
 		let ratex = 1 / widthSegment
 		let ratey = 1 / heightSegment
@@ -78,14 +78,17 @@ export class CubeGeometry extends Geometry {
 				for (let x = 0; x <= widthSegment; x += 1) {
 					let posx = (-0.5 + ratex * x) * width
 
-					vertices.push(posx)
-					vertices.push(dir * height / 2)
-					vertices.push(posz)
-
-					uvs.push(x * ratex)
-
-					if (i == 1) uvs.push(z * ratez)
-					else uvs.push(1.0 - z * ratez)
+					verticesUvsNormals.push(
+						// pos
+						posx,
+						dir * height / 2,
+						posz,
+						// uv
+						x * ratex,
+						i === 1 ? z * ratez : 1.0 - z * ratez,
+						// normal
+						0, dir, 0
+					)
 				}
 			}
 		}
@@ -98,14 +101,17 @@ export class CubeGeometry extends Geometry {
 				for (let x = 0; x <= widthSegment; x += 1) {
 					let posx = (-0.5 + ratex * x) * width
 
-					vertices.push(posx)
-					vertices.push(posy)
-					vertices.push(dir * depth / 2)
-
-					if (i == 1) uvs.push(x * ratex)
-					else uvs.push(1.0 - x * ratex)
-
-					uvs.push(1.0 - y * ratey)
+					verticesUvsNormals.push(
+						// pos
+						posx,
+						posy,
+						dir * depth / 2,
+						// uv
+						i === 1 ? x * ratex : 1.0 - x * ratex,
+						1.0 - y * ratey,
+						// normal 
+						0, 0, dir
+					)
 				}
 			}
 		}
@@ -119,21 +125,22 @@ export class CubeGeometry extends Geometry {
 				for (let z = 0; z <= depthSegment; z += 1) {
 					let posz = (-0.5 + ratez * z) * depth
 
-					vertices.push(dir * width / 2)
-					vertices.push(posy)
-					vertices.push(posz)
-
-					if (i === 0) uvs.push(z * ratez)
-					else uvs.push(1.0 - z * ratez)
-					uvs.push(1.0 - y * ratey)
+					verticesUvsNormals.push(
+						// pos
+						dir * width / 2,
+						posy,
+						posz,
+						// uv
+						i === 0 ? z * ratez : 1.0 - z * ratez,
+						1.0 - y * ratey,
+						// normal
+						dir, 0, 0
+					)
 				}
 			}
 		}
 
-		return { 
-			vertices: new Float32Array(vertices), 
-			uvs: new Float32Array(uvs)
-		}
+		return new Float32Array(verticesUvsNormals)
 	}
 
 	static makeNormals (widthSegment, heightSegment, depthSegment) {
