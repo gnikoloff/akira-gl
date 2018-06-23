@@ -2,7 +2,7 @@ import { glMatrix, mat4 } from 'gl-matrix'
 
 /**
  * This class is taken from tubugl's math-utils
- * https://github.com/kenjiSpecial/tubugl-utils/blob/master/src/mathUtils.js
+ * https://github.com/kenjiSpecial/tubuakira-utils/blob/master/src/mathUtils.js
  */
 
 /**

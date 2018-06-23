@@ -3,10 +3,10 @@ import {
     ARRAY_BUFFER,
     ELEMENT_ARRAY_BUFFER,
     STATIC_DRAW
-} from '../gl-constants'
+} from '../akira-constants'
 
-import { ArrayBuffer } from '../gl-core'
-import { IndexArrayBuffer } from '../gl-core'
+import { ArrayBuffer } from '../akira-core'
+import { IndexArrayBuffer } from '../akira-core'
 
 /**
  * Base geometry class

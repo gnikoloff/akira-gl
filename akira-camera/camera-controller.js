@@ -4,8 +4,8 @@
  */
 
 import { vec3 } from 'gl-matrix'
-import { Vector3 } from '../gl-math/vector3'
-import { clamp } from '../gl-math/utils'
+import { Vector3 } from '../akira-math/vector3'
+import { clamp } from '../akira-math/utils'
 
 /**
  * Creates a camera controller to allow user to explore 3d scene with moving, panning and zooming

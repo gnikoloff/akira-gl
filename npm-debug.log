@@ -72,7 +72,7 @@
 26 verbose stack     at _stream_readable.js:908:16
 27 verbose statusCode 404
 28 verbose pkgid documentationjs
-29 verbose cwd /Applications/MAMP/htdocs/gl-lib
+29 verbose cwd /Applications/MAMP/htdocs/akira-lib
 30 error Darwin 16.7.0
 31 error argv "/Users/georginikoloff/.nvm/versions/node/v0.12.18/bin/node" "/Users/georginikoloff/.nvm/versions/node/v0.12.18/bin/npm" "i" "-g" "documentationjs"
 32 error node v0.12.18

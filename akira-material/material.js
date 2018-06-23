@@ -1,8 +1,8 @@
-import { ELEMENT_ARRAY_BUFFER } from '../gl-constants'
-import { Uniform } from '../gl-core/uniform'
-import { Transform } from '../gl-math'
+import { ELEMENT_ARRAY_BUFFER } from '../akira-constants'
+import { Uniform } from '../akira-core/uniform'
+import { Transform } from '../akira-math'
 
-import { makeShader, makeProgram } from '../gl-core/utils'
+import { makeShader, makeProgram } from '../akira-core/utils'
 
 import { shaderSharedUniformsVertexFragment } from './shader-bits/shared-uniforms'
 import { shaderPrecisionFragment } from './shader-bits/shader-precision'

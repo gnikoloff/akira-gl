@@ -1,5 +1,5 @@
 import { mat4 } from 'gl-matrix'
-import { Euler, Vector3 } from '../gl-math'
+import { Euler, Vector3 } from '../akira-math'
 
 /**
  * @class Perspspective Camera class

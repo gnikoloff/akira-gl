@@ -2,7 +2,7 @@ import {
     RGBA,
     UNSIGNED_BYTE,
     NEAREST
-} from '../gl-constants'
+} from '../akira-constants'
 
 import { Texture } from './texture'
 

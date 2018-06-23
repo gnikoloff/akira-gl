@@ -1,8 +1,8 @@
-import { FLOAT } from '../gl-constants'
+import { FLOAT } from '../akira-constants'
 
 import { Geometry } from './geometry'
-import { InstancedArrayBuffer } from '../gl-core'
-import { getWebGLExtension } from '../gl-core'
+import { InstancedArrayBuffer } from '../akira-core'
+import { getWebGLExtension } from '../akira-core'
 
 /**
  * Instanced Geometry class for gpu instancing

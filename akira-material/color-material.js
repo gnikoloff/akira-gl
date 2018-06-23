@@ -1,6 +1,6 @@
 import { Material } from './material'
 
-import { Vector3 } from '../gl-math'
+import { Vector3 } from '../akira-math'
 
 /**
  * Simple single-color material

@@ -1,7 +1,7 @@
 import { 
     ELEMENT_ARRAY_BUFFER,
     TRIANGLES
-} from '../gl-constants'
+} from '../akira-constants'
 
 import { VAO } from './vao'
 

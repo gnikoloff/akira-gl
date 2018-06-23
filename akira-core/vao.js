@@ -1,4 +1,4 @@
-import { ELEMENT_ARRAY_BUFFER } from '../gl-constants'
+import { ELEMENT_ARRAY_BUFFER } from '../akira-constants'
 import { getWebGLExtension } from './utils'
 
 /**

@@ -5,7 +5,7 @@ import {
     CLAMP_TO_EDGE,
     NEAREST,
     UNPACK_FLIP_Y_WEBGL
-} from '../gl-constants'
+} from '../akira-constants'
 
 /**
  * @class Texture

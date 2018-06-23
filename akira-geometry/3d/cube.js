@@ -1,4 +1,4 @@
-import { LINE_STRIP } from '../../gl-constants'
+import { LINE_STRIP } from '../../akira-constants'
 import { Geometry } from '../geometry'
 import { generateWireframeIndices } from '../utils'
 

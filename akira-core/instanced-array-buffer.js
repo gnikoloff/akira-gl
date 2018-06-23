@@ -2,7 +2,7 @@ import {
     FLOAT, 
     STATIC_DRAW,
     ARRAY_BUFFER 
-} from '../gl-constants'
+} from '../akira-constants'
 
 import { ArrayBuffer } from './array-buffer'
 

@@ -2,7 +2,7 @@ import {
     FLOAT, 
     STATIC_DRAW,
     ARRAY_BUFFER 
-} from '../gl-constants'
+} from '../akira-constants'
 
 /**
  * Used to associate attribute and it's buffer

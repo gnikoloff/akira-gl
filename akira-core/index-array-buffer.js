@@ -1,7 +1,7 @@
 import { 
     ELEMENT_ARRAY_BUFFER,
     STATIC_DRAW
-} from '../gl-constants'
+} from '../akira-constants'
 
 /**
  * Buffer used for geometry's indices to reduce vertices redundancy.
