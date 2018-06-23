@@ -83,6 +83,7 @@ export class PerspectiveCamera {
 		if (x !== undefined) this.position.x = x
 		if (y !== undefined) this.position.y = y
 		if (z !== undefined) this.position.z = z
+		console.log(this.position)
 
 		return this
 	}

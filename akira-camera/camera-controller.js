@@ -82,9 +82,15 @@ export class CameraController {
 		let dX = this._camera.position.x
 		let dY = this._camera.position.y
 		let dZ = this._camera.position.z
+		
 		let radius = Math.sqrt(dX * dX + dY * dY + dZ * dZ)
 		let theta = Math.atan2(this._camera.position.x, this._camera.position.z) // equator angle around y-up axis
 		let phi = Math.acos(clamp(this._camera.position.y / radius, -1, 1)) // polar angle
+
+		if (radius === 0) {
+			console.warn('camera is positioned at 0 0 0!')
+			return
+		}
 		
 		this._spherical = {
 			radius: radius,
@@ -187,6 +193,8 @@ export class CameraController {
 				x: this._rotateEnd.x - this._rotateStart.x,
 				y: this._rotateEnd.y - this._rotateStart.y
 			}
+			
+
 
 			this._updateRotateHandler()
 
